@@ -8,10 +8,6 @@ const PostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'user'
   },
-  author: {
-    type: String,
-    required: true
-  },
   title: {
     type: String,
     required: true
@@ -25,9 +21,17 @@ const PostSchema = new Schema({
     url: String,
     publicID: String
   },
+  layout: {
+    type: Number,
+    content: [String],
+    image: [{ url: String, publicID: String }]
+  },
+  customLayout: {
+    type: Boolean,
+    default: false
+  },
   html: {
-    type: String,
-    required: true
+    type: String
   },
   createdAt: {
     type: Date,

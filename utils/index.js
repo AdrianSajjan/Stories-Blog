@@ -1,8 +1,14 @@
 const { generateOAuth2Tokens, generateOAuthToken } = require('./tokens')
-const { validateUserRegistration } = require('./validations')
+const {
+  validateUserRegistration,
+  validateUserLogin,
+  validateGenericPost
+} = require('./validations')
 
 module.exports = {
   validateUserRegistration,
+  validateUserLogin,
+  validateGenericPost,
   generateOAuth2Tokens,
   generateOAuthToken
 }
