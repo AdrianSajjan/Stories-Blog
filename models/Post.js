@@ -8,6 +8,10 @@ const PostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'user'
   },
+  author: {
+    type: String,
+    required: true
+  },
   title: {
     type: String,
     required: true
@@ -18,20 +22,19 @@ const PostSchema = new Schema({
     unique: true
   },
   coverImage: {
-    url: String,
-    publicID: String
+    type: String,
+    required: true
   },
   layout: {
-    type: Number,
-    content: [String],
-    image: [{ url: String, publicID: String }]
-  },
-  customLayout: {
-    type: Boolean,
-    default: false
+    use: Boolean,
+    format: Number,
+    contents: [String],
+    images: [String]
   },
   html: {
-    type: String
+    use: Boolean,
+    content: String,
+    css: String
   },
   createdAt: {
     type: Date,
@@ -53,11 +56,15 @@ const PostSchema = new Schema({
     type: Number,
     default: 0
   },
-  tags: [String]
+  tags: {
+    type: [String]
+  }
 })
 
-PostSchema.pre('validate', (next) => {
-  this.slug = slugify(this.title, { strict: true, lower: true })
+PostSchema.pre('validate', function (next) {
+  const slug = slugify(this.title, { strict: true, lower: true })
+  this.slug = `${slug}-${new Date().toISOString().split('T', 1)[0]}`
+
   next()
 })
 

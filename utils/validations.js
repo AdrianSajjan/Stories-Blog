@@ -1,5 +1,5 @@
 const { User } = require('../models')
-const { body, oneOf } = require('express-validator')
+const { body } = require('express-validator')
 
 const validateUserRegistration = () => [
   body('name')
@@ -51,7 +51,8 @@ const validateUserRegistration = () => [
     .withMessage('Password cannot be less than 6 characters'),
 
   body('confirmPassword').custom((value, { req }) => {
-    if (req.body.password !== value) throw new Error("Passwords don't match")
+    const { password } = req.body
+    if (password && password !== value) throw new Error("Passwords don't match")
     else return true
   })
 ]
@@ -89,19 +90,60 @@ const validateGenericPost = () => [
       else return true
     }),
 
-  body('layout')
+  body('coverImage')
+    .not()
+    .isEmpty()
+    .withMessage('Please provide URL to Cover Image')
+    .isURL()
+    .withMessage('Please provide a valid URL'),
+
+  body('type')
     .not()
     .isEmpty()
     .withMessage('Please provide a layout')
     .isNumeric()
-    .withMessage('Layout should be numeric'),
+    .withMessage('Please provide a valid layout'),
+
+  body('content').isArray({ min: 1 }).withMessage('Content cannot be empty'),
+
+  body('content.*').not().isEmpty().withMessage('Content cannot be empty'),
+
+  body('images')
+    .optional()
+    .isArray({ min: 1 })
+    .withMessage('Images cannot be empty'),
+
+  body('images.*').optional().isURL().withMessage('Please provide a valid URL'),
+
+  body('category').not().isEmpty().withMessage('Please provide the category')
+]
+
+const validateCustomPost = () => [
+  body('title')
+    .trim()
+    .not()
+    .isEmpty()
+    .withMessage('Title cannot be empty')
+    .isLength({ min: 10 })
+    .withMessage('Title must contain atleast 10 letters')
+    .matches(/[a-zA-Z0-9!_-]$/)
+    .withMessage('Title has invalid characters')
+    .matches(/[a-zA-Z]$/)
+    .withMessage('Title must contain letters'),
+
+  body('coverImage')
+    .not()
+    .isEmpty()
+    .withMessage('Please provide URL to Cover Image')
+    .isURL()
+    .withMessage('Please provide a valid URL'),
 
   body('content')
     .not()
     .isEmpty()
     .withMessage('Content cannot be empty')
-    .isLength({ min: 50 })
-    .withMessage('Content cannot be less than 50 characters'),
+    .isLength({ min: 100 })
+    .withMessage('Content cannot be less than 100 letters'),
 
   body('category').not().isEmpty().withMessage('Please provide the category')
 ]
@@ -109,5 +151,6 @@ const validateGenericPost = () => [
 module.exports = {
   validateUserRegistration,
   validateUserLogin,
-  validateGenericPost
+  validateGenericPost,
+  validateCustomPost
 }
