@@ -1,20 +1,26 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { Dialog } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 import { Login } from './'
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    margin: theme.spacing(1.5)
+  }
+}))
 
 const FormDialog = (props) => {
   const { isOpen, setIsOpen } = props
-
-  const [visible, setVisible] = useState(false)
+  const classes = useStyles()
 
   const handleClose = () => {
     setIsOpen(false)
   }
 
   return (
-    <Dialog open={isOpen} onClose={handleClose}>
-      <Login visible={visible} setVisible={setVisible} handleClose={handleClose} />
+    <Dialog open={isOpen} onClose={handleClose} classes={{ paper: classes.paper }}>
+      <Login handleClose={handleClose} />
     </Dialog>
   )
 }

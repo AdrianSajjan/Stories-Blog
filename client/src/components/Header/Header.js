@@ -1,8 +1,8 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment } from 'react'
 import { Menu as MenuIcon } from '@material-ui/icons'
 import { Toolbar, Button, Typography, IconButton, Link } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { FormDialog } from '../'
+import { navLinks } from '../../constants'
 
 const useStyles = makeStyles((theme) => ({
   mainToolbar: {
@@ -53,24 +53,26 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Header = () => {
+const Header = ({ setIsDialogOpen, setIsSidebarOpen }) => {
   const classes = useStyles()
-  const [isOpen, setIsOpen] = useState(false)
 
-  const handleOpen = () => {
-    setIsOpen(true)
+  const handleDialogOpen = () => {
+    setIsDialogOpen(true)
+  }
+
+  const handleSidebarOpen = () => {
+    setIsSidebarOpen(true)
   }
 
   return (
     <Fragment>
-      <FormDialog isOpen={isOpen} setIsOpen={setIsOpen} />
       <Toolbar component="header" className={classes.mainToolbar}>
         <Button className={classes.hideSm}>
           <Typography variant="button">Subscribe</Typography>
         </Button>
 
         <IconButton className={classes.showSm}>
-          <MenuIcon />
+          <MenuIcon onClick={handleSidebarOpen} />
         </IconButton>
 
         <Typography variant="h5" className={classes.toolbarTitle}>
@@ -79,7 +81,7 @@ const Header = () => {
           </Link>
         </Typography>
 
-        <Button variant="outlined" className={classes.hideSm} onClick={handleOpen}>
+        <Button variant="outlined" className={classes.hideSm} onClick={handleDialogOpen}>
           <Typography variant="button">Login</Typography>
         </Button>
       </Toolbar>
@@ -94,38 +96,5 @@ const Header = () => {
     </Fragment>
   )
 }
-
-const navLinks = [
-  {
-    id: 1,
-    name: 'Sports',
-    url: '#'
-  },
-  {
-    id: 2,
-    name: 'Food',
-    url: '#'
-  },
-  {
-    id: 3,
-    name: 'Technology',
-    url: '#'
-  },
-  {
-    id: 4,
-    name: 'Travel',
-    url: '#'
-  },
-  {
-    id: 5,
-    name: 'Style',
-    url: '#'
-  },
-  {
-    id: 6,
-    name: 'Health',
-    url: '#'
-  }
-]
 
 export default Header
