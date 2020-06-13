@@ -1,2 +1,2 @@
-export { default as Routes } from './Routes/Routes'
-export { default as RouteWithLayout } from './RouteWithLayout/RouteWithLayout'
+export { default as Routes } from './Routes'
+export { default as ProtectedRoute } from './ProtectedRoute'
