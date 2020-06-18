@@ -1,9 +1,12 @@
 import React from 'react'
 import { Router } from 'react-router-dom'
-import { CssBaseline, Container, ThemeProvider, createMuiTheme } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import { Routes } from './components'
+import { Provider } from 'react-redux'
+import { SnackbarProvider } from 'notistack'
+import { CssBaseline, Container, ThemeProvider } from '@material-ui/core'
+import { makeStyles, createMuiTheme } from '@material-ui/core/styles'
+import { Routes, Notifier, SnackContent } from './components'
 import { history } from './utils'
+import { store } from './store'
 
 const theme = createMuiTheme({
   typography: {
@@ -32,14 +35,22 @@ const useStyles = makeStyles((theme) => ({
 export const App = () => {
   const classes = useStyles()
 
+  const anchorOrigin = { vertical: 'top', horizontal: 'right' }
+  const content = (key, message) => <SnackContent id={key} message={message} />
+
   return (
     <Router history={history}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Container maxWidth="md" className={classes.container} disableGutters>
-          <Routes />
-        </Container>
-      </ThemeProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <SnackbarProvider maxSnack={5} anchorOrigin={anchorOrigin} content={content}>
+            <CssBaseline />
+            <Container maxWidth="md" className={classes.container} disableGutters>
+              <Notifier />
+              <Routes />
+            </Container>
+          </SnackbarProvider>
+        </ThemeProvider>
+      </Provider>
     </Router>
   )
 }

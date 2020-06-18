@@ -10,7 +10,7 @@ const MainLayout = (props) => {
   return (
     <Fragment>
       <FormDialog isOpen={isFormDialogOpen} setIsOpen={setIsFormDialogOpen} />
-      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} setFormDialogOpen={setIsFormDialogOpen} />
       <Header setIsDialogOpen={setIsFormDialogOpen} setIsSidebarOpen={setIsSidebarOpen} />
       {children}
     </Fragment>

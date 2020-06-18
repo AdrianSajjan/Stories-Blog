@@ -71,8 +71,8 @@ const Header = ({ setIsDialogOpen, setIsSidebarOpen }) => {
           <Typography variant="button">Subscribe</Typography>
         </Button>
 
-        <IconButton className={classes.showSm}>
-          <MenuIcon onClick={handleSidebarOpen} />
+        <IconButton className={classes.showSm} onClick={handleSidebarOpen}>
+          <MenuIcon />
         </IconButton>
 
         <Typography variant="h5" className={classes.toolbarTitle}>
