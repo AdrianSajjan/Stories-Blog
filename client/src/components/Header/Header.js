@@ -1,6 +1,8 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Menu as MenuIcon } from '@material-ui/icons'
-import { Toolbar, Button, Typography, IconButton, Link } from '@material-ui/core'
+import { Toolbar, Button, Typography, IconButton, Link, Menu, MenuItem } from '@material-ui/core'
+import { ExitToApp, AccountBox, Create } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import { navLinks } from '../../constants'
 
@@ -50,24 +52,78 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       display: 'flex'
     }
+  },
+  accountIcons: {
+    marginRight: theme.spacing(1.5)
   }
 }))
 
-const Header = ({ setIsDialogOpen, setIsSidebarOpen }) => {
+const Header = (props) => {
+  const { setFormDialogOpen, setSidebarOpen, setAuthorDialogOpen, setSubscribeDialogOpen } = props
   const classes = useStyles()
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
+  const isAuthor = useSelector((state) => state.user.isAuthor)
 
-  const handleDialogOpen = () => {
-    setIsDialogOpen(true)
+  const handleFormDialogOpen = () => {
+    setFormDialogOpen(true)
   }
 
   const handleSidebarOpen = () => {
-    setIsSidebarOpen(true)
+    setSidebarOpen(true)
+  }
+
+  const handleSubscribeDialog = () => {
+    setSubscribeDialogOpen(true)
+  }
+
+  const LoginButton = () => (
+    <Button variant="outlined" className={classes.hideSm} onClick={handleFormDialogOpen}>
+      <Typography variant="button">Login</Typography>
+    </Button>
+  )
+
+  const AccountButton = () => {
+    const [anchorEl, setAnchorEl] = useState(null)
+
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget)
+    }
+
+    const handleClose = () => {
+      setAnchorEl(null)
+    }
+
+    const handleAuthorDialog = () => {
+      setAuthorDialogOpen(true)
+    }
+
+    return (
+      <div>
+        <Button variant="outlined" className={classes.hideSm} onClick={handleClick}>
+          Account
+        </Button>
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose} keepMounted>
+          <MenuItem onClick={isAuthor ? handleClose : handleAuthorDialog}>
+            <Create fontSize="small" className={classes.accountIcons} />
+            <span>{isAuthor ? 'Author' : 'Become an Author'}</span>
+          </MenuItem>
+          <MenuItem onClick={handleClose}>
+            <AccountBox fontSize="small" className={classes.accountIcons} />
+            <span>Profile</span>
+          </MenuItem>
+          <MenuItem onClick={handleClose}>
+            <ExitToApp fontSize="small" className={classes.accountIcons} />
+            <span>Logout</span>
+          </MenuItem>
+        </Menu>
+      </div>
+    )
   }
 
   return (
     <Fragment>
       <Toolbar component="header" className={classes.mainToolbar}>
-        <Button className={classes.hideSm}>
+        <Button className={classes.hideSm} onClick={handleSubscribeDialog}>
           <Typography variant="button">Subscribe</Typography>
         </Button>
 
@@ -81,9 +137,7 @@ const Header = ({ setIsDialogOpen, setIsSidebarOpen }) => {
           </Link>
         </Typography>
 
-        <Button variant="outlined" className={classes.hideSm} onClick={handleDialogOpen}>
-          <Typography variant="button">Login</Typography>
-        </Button>
+        {isAuthenticated ? <AccountButton /> : <LoginButton />}
       </Toolbar>
 
       <Toolbar component="nav" variant="dense" className={classes.toolbarNav}>

@@ -112,6 +112,15 @@ const Login = (props) => {
       password: Yup.string().required('Field is required')
     }),
     onSubmit: async (values, actions) => {
+      if (isUserLoading)
+        return dispatch(
+          enqueueSnackbar({
+            message: 'User Loading. Please wait.',
+            options: {
+              variant: 'info'
+            }
+          })
+        )
       try {
         setLoading(true)
         const res = await axios.post('api/user/login', values)
@@ -128,6 +137,7 @@ const Login = (props) => {
           })
         )
         actions.resetForm()
+        handleClose()
       } catch (err) {
         const errorResponse = err.response.data
         if (errorResponse) {
@@ -163,7 +173,7 @@ const Login = (props) => {
     }
   })
 
-  const { handleClose, changeForm } = props
+  const { handleClose, changeForm, isUserLoading } = props
   const { handleSubmit, getFieldProps, errors, touched } = formik
 
   const VisibilityIcon = () => (

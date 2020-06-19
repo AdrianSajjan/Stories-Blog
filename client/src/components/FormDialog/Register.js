@@ -104,6 +104,15 @@ const Register = (props) => {
         .equals([Yup.ref('password'), null], "Passwords don't match")
     }),
     onSubmit: async (values, actions) => {
+      if (isUserLoading)
+        return dispatch(
+          enqueueSnackbar({
+            message: 'User Loading. Please wait.',
+            options: {
+              variant: 'info'
+            }
+          })
+        )
       try {
         setLoading(true)
         const res = await axios.post('api/user/register', values)
@@ -120,6 +129,7 @@ const Register = (props) => {
           })
         )
         actions.resetForm()
+        handleClose()
       } catch (err) {
         const errorResponse = err.response.data
         if (errorResponse) {
@@ -155,7 +165,7 @@ const Register = (props) => {
     }
   })
 
-  const { handleClose, changeForm } = props
+  const { handleClose, changeForm, isUserLoading } = props
   const { handleSubmit, getFieldProps, errors, touched } = formik
 
   const switchForm = () => {

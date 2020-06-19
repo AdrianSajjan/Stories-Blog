@@ -32,7 +32,7 @@ export const useResponseInterceptor = (persistSession) => {
 
       originalRequest._retry = true
       const refreshToken = getRefreshToken(persistSession)
-      const res = await axios.post('/api/auth/oauth2', { refreshToken })
+      const res = await axios.post('/api/oauth2', { refreshToken })
       store.dispatch(updateTokens(res.data))
 
       return axios(originalRequest)

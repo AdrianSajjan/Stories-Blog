@@ -5,7 +5,7 @@ import { SnackbarProvider } from 'notistack'
 import { CssBaseline, Container, ThemeProvider } from '@material-ui/core'
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles'
 import { Routes, Notifier, SnackContent } from './components'
-import { history } from './utils'
+import { history, verifyAuthentication } from './utils'
 import { store } from './store'
 
 const theme = createMuiTheme({
@@ -31,6 +31,8 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }))
+
+verifyAuthentication(store)
 
 export const App = () => {
   const classes = useStyles()

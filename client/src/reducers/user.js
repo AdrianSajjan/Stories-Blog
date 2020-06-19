@@ -1,9 +1,12 @@
-import { SET_SESSION, GET_USER, SET_USER } from '../constants'
+import { SET_SESSION, GET_USER, USER_ERROR, SET_USER } from '../constants'
 
 const initialState = {
   isAuthenticated: false,
   persistSession: false,
-  user: null,
+  isValidated: false,
+  isAdmin: false,
+  isAuthor: false,
+  info: null,
   loading: false
 }
 
@@ -28,6 +31,12 @@ export default function (state = initialState, action) {
         ...state,
         ...payload,
         isAuthenticated: true,
+        loading: false
+      }
+    }
+    case USER_ERROR: {
+      return {
+        ...state,
         loading: false
       }
     }
