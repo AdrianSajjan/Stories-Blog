@@ -1,8 +1,9 @@
 import React, { Fragment, useState } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { SwipeableDrawer, List, ListItem, ListItemText, Collapse } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { ExpandLess, ExpandMore } from '@material-ui/icons'
+import { ExpandLess, ExpandMore, Create, AccountBox, ExitToApp } from '@material-ui/icons'
 import { navLinks } from '../../constants'
 
 const useStyles = makeStyles((theme) => ({
@@ -15,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
   },
   nestedList: {
     paddingLeft: theme.spacing(4)
+  },
+  accountOptions: {
+    marginLeft: theme.spacing(1.5)
   }
 }))
 
@@ -23,16 +27,6 @@ const Sidebar = (props) => {
   const classes = useStyles()
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
   const isAuthor = useSelector((state) => state.user.isAuthor)
-  const [categoriesOpen, setCategoriesOpen] = useState(false)
-  const [accountOpen, setAccountOpen] = useState(false)
-
-  const toggleAccount = () => {
-    setAccountOpen((prev) => !prev)
-  }
-
-  const toggleCategories = () => {
-    setCategoriesOpen((prev) => !prev)
-  }
 
   const handleFormDialog = () => {
     handleClose()
@@ -47,15 +41,32 @@ const Sidebar = (props) => {
     setIsOpen(true)
   }
 
-  const handleAuthorDialog = () => {
-    setAuthorDialogOpen(true)
+  const handleAuthorDialog = (event) => {
+    if (!isAuthor) {
+      event.preventDefault()
+      setAuthorDialogOpen(true)
+    }
   }
 
   const handleSubscribeDialog = () => {
     setSubscribeDialogOpen(true)
   }
 
+  const LoginButton = () => {
+    return (
+      <ListItem button>
+        <ListItemText primary="Login" onClick={handleFormDialog} primaryTypographyProps={{ variant: 'body1' }} />
+      </ListItem>
+    )
+  }
+
   const AccountOption = () => {
+    const [accountOpen, setAccountOpen] = useState(false)
+
+    const toggleAccount = () => {
+      setAccountOpen((prev) => !prev)
+    }
+
     return (
       <Fragment>
         <ListItem button onClick={toggleAccount}>
@@ -65,18 +76,63 @@ const Sidebar = (props) => {
 
         <Collapse in={accountOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItem button className={classes.nestedList} onClick={!isAuthor ? handleAuthorDialog : null}>
+            <ListItem
+              button
+              component={RouterLink}
+              to="/author"
+              className={classes.nestedList}
+              onClick={handleAuthorDialog}
+            >
+              <Create fontSize="small" />
               <ListItemText
+                className={classes.accountOptions}
                 primary={isAuthor ? 'Author' : 'Become an Author'}
                 primaryTypographyProps={{ variant: 'body1' }}
               />
             </ListItem>
-            <ListItem button className={classes.nestedList}>
-              <ListItemText primary="Profile" primaryTypographyProps={{ variant: 'body1' }} />
+            <ListItem button component={RouterLink} to="/profile" className={classes.nestedList}>
+              <AccountBox fontSize="small" />
+              <ListItemText
+                className={classes.accountOptions}
+                primary="Profile"
+                primaryTypographyProps={{ variant: 'body1' }}
+              />
             </ListItem>
-            <ListItem button className={classes.nestedList}>
-              <ListItemText primary="Logout" primaryTypographyProps={{ variant: 'body1' }} />
+            <ListItem button component={RouterLink} to="/logout" className={classes.nestedList}>
+              <ExitToApp fontSize="small" />
+              <ListItemText
+                className={classes.accountOptions}
+                primary="Logout"
+                primaryTypographyProps={{ variant: 'body1' }}
+              />
             </ListItem>
+          </List>
+        </Collapse>
+      </Fragment>
+    )
+  }
+
+  const CategoryOptions = () => {
+    const [categoriesOpen, setCategoriesOpen] = useState(false)
+
+    const toggleCategories = () => {
+      setCategoriesOpen((prev) => !prev)
+    }
+
+    return (
+      <Fragment>
+        <ListItem button onClick={toggleCategories}>
+          <ListItemText primary="Categories" primaryTypographyProps={{ variant: 'body1' }} />
+          {categoriesOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+
+        <Collapse in={categoriesOpen} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {navLinks.map((link) => (
+              <ListItem button component={RouterLink} to={link.url} key={link.id} className={classes.nestedList}>
+                <ListItemText primary={link.name} primaryTypographyProps={{ variant: 'body1' }} />
+              </ListItem>
+            ))}
           </List>
         </Collapse>
       </Fragment>
@@ -94,37 +150,11 @@ const Sidebar = (props) => {
                 primaryTypographyProps={{ variant: 'h5', className: classes.drawerTitle }}
               />
             </ListItem>
-
-            {!isAuthenticated ? (
-              <ListItem button>
-                <ListItemText
-                  primary="Login"
-                  onClick={handleFormDialog}
-                  primaryTypographyProps={{ variant: 'body1' }}
-                />
-              </ListItem>
-            ) : (
-              <AccountOption />
-            )}
-
+            {!isAuthenticated ? <LoginButton /> : <AccountOption />}
             <ListItem button onClick={handleSubscribeDialog}>
               <ListItemText primary="Subscribe" primaryTypographyProps={{ variant: 'body1' }} />
             </ListItem>
-
-            <ListItem button onClick={toggleCategories}>
-              <ListItemText primary="Categories" primaryTypographyProps={{ variant: 'body1' }} />
-              {categoriesOpen ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-
-            <Collapse in={categoriesOpen} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                {navLinks.map((link) => (
-                  <ListItem button component="a" href={link.url} key={link.id} className={classes.nestedList}>
-                    <ListItemText primary={link.name} primaryTypographyProps={{ variant: 'body1' }} />
-                  </ListItem>
-                ))}
-              </List>
-            </Collapse>
+            <CategoryOptions />
           </List>
         </div>
       </SwipeableDrawer>

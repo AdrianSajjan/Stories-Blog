@@ -1,7 +1,7 @@
-import axios from 'axios'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import { useDispatch } from 'react-redux'
+import { Link as RouterLink } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import React, { Fragment, useState } from 'react'
 import {
   DialogTitle,
@@ -18,8 +18,7 @@ import {
 } from '@material-ui/core'
 import { Lock, Visibility, VisibilityOff } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
-import { setSession, getUser, enqueueSnackbar } from '../../actions'
-import { setTokens, axiosRequestInterceptor } from '../../utils'
+import { enqueueSnackbar, loginUser } from '../../actions'
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -98,8 +97,8 @@ const useStyles = makeStyles((theme) => ({
 const Login = (props) => {
   const [visible, setVisible] = useState(false)
   const [remember, setRemember] = useState(false)
-  const [loading, setLoading] = useState(false)
 
+  const loading = useSelector((state) => state.request.login)
   const dispatch = useDispatch()
   const classes = useStyles()
   const formik = useFormik({
@@ -112,64 +111,8 @@ const Login = (props) => {
       password: Yup.string().required('Field is required')
     }),
     onSubmit: async (values, actions) => {
-      if (isUserLoading)
-        return dispatch(
-          enqueueSnackbar({
-            message: 'User Loading. Please wait.',
-            options: {
-              variant: 'info'
-            }
-          })
-        )
-      try {
-        setLoading(true)
-        const res = await axios.post('api/user/login', values)
-        setTokens(res.data, remember)
-        axiosRequestInterceptor(remember)
-        dispatch(setSession(remember))
-        dispatch(getUser())
-        dispatch(
-          enqueueSnackbar({
-            message: 'Login Success',
-            options: {
-              variant: 'success'
-            }
-          })
-        )
-        actions.resetForm()
-        handleClose()
-      } catch (err) {
-        const errorResponse = err.response.data
-        if (errorResponse) {
-          if (errorResponse.validation) {
-            errorResponse.errors.forEach((error) => {
-              actions.setFieldError(error.param, error.msg)
-            })
-          } else if (errorResponse.authentication) {
-            actions.setFieldError(errorResponse.error.param, errorResponse.error.msg)
-          } else {
-            dispatch(
-              enqueueSnackbar({
-                message: errorResponse.msg || 'Login Failed',
-                options: {
-                  variant: 'error'
-                }
-              })
-            )
-          }
-        } else {
-          dispatch(
-            enqueueSnackbar({
-              message: 'Login Failed',
-              options: {
-                variant: 'error'
-              }
-            })
-          )
-        }
-      } finally {
-        setLoading(false)
-      }
+      if (isUserLoading) return dispatch(enqueueSnackbar({ message: 'User Loading. Please wait!' }))
+      dispatch(loginUser(values, actions.setFieldError, handleClose, remember))
     }
   })
 
@@ -244,7 +187,7 @@ const Login = (props) => {
               }
               label="Remember Me"
             />
-            <Link href="#" variant="body1">
+            <Link component={RouterLink} to="recovery" variant="body1">
               Forgot Password?
             </Link>
           </div>

@@ -7,7 +7,8 @@ import { useSelector } from 'react-redux'
 const useStyles = makeStyles((theme) => ({
   alert: {
     width: '100%',
-    maxWidth: 400
+    maxWidth: 400,
+    boxShadow: theme.shadows[5]
   }
 }))
 

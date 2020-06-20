@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { Link as RouterLink } from 'react-router-dom'
 import { Menu as MenuIcon } from '@material-ui/icons'
 import { Toolbar, Button, Typography, IconButton, Link, Menu, MenuItem } from '@material-ui/core'
 import { ExitToApp, AccountBox, Create } from '@material-ui/icons'
@@ -93,7 +94,8 @@ const Header = (props) => {
       setAnchorEl(null)
     }
 
-    const handleAuthorDialog = () => {
+    const handleAuthorDialog = (event) => {
+      event.preventDefault()
       setAuthorDialogOpen(true)
     }
 
@@ -103,15 +105,15 @@ const Header = (props) => {
           Account
         </Button>
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose} keepMounted>
-          <MenuItem onClick={isAuthor ? handleClose : handleAuthorDialog}>
+          <MenuItem component={RouterLink} to="/author" onClick={isAuthor ? handleClose : handleAuthorDialog}>
             <Create fontSize="small" className={classes.accountIcons} />
             <span>{isAuthor ? 'Author' : 'Become an Author'}</span>
           </MenuItem>
-          <MenuItem onClick={handleClose}>
+          <MenuItem component={RouterLink} to="/profile" onClick={handleClose}>
             <AccountBox fontSize="small" className={classes.accountIcons} />
             <span>Profile</span>
           </MenuItem>
-          <MenuItem onClick={handleClose}>
+          <MenuItem component={RouterLink} to="/logout" onClick={handleClose}>
             <ExitToApp fontSize="small" className={classes.accountIcons} />
             <span>Logout</span>
           </MenuItem>
@@ -132,7 +134,7 @@ const Header = (props) => {
         </IconButton>
 
         <Typography variant="h5" className={classes.toolbarTitle}>
-          <Link color="inherit" href="/" className={classes.toolbarTitleLink}>
+          <Link component={RouterLink} color="inherit" to="/" className={classes.toolbarTitleLink}>
             STORIES! Blog
           </Link>
         </Typography>
@@ -142,7 +144,7 @@ const Header = (props) => {
 
       <Toolbar component="nav" variant="dense" className={classes.toolbarNav}>
         {navLinks.map((link) => (
-          <Link key={link.id} href={link.url} color="inherit">
+          <Link component={RouterLink} key={link.id} to={link.url} color="inherit">
             {link.name}
           </Link>
         ))}

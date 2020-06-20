@@ -1,5 +1,57 @@
 import axios from 'axios'
+import { setTokens, axiosRequestInterceptor } from '../utils'
+import { setLoginRequest, setRegistrationRequest, enqueueSnackbar } from './'
 import { GET_USER, SET_USER, USER_ERROR, SET_SESSION } from '../constants'
+
+export const loginUser = (values, setFieldError, handleClose, persistSession) => async (dispatch) => {
+  try {
+    dispatch(setLoginRequest(true))
+    const res = await axios.post('api/user/login', values)
+    setTokens(res.data, persistSession)
+    axiosRequestInterceptor(persistSession)
+    dispatch(setSession(persistSession))
+    dispatch(getUser())
+    dispatch(enqueueSnackbar({ message: 'Login Success', options: { variant: 'success' } }))
+    handleClose()
+  } catch (err) {
+    dispatch(handleErrors(err.response.data, setFieldError, 'Login'))
+  } finally {
+    dispatch(setLoginRequest(false))
+  }
+}
+
+export const registerUser = (values, setFieldError, handleClose) => async (dispatch) => {
+  try {
+    dispatch(setRegistrationRequest(true))
+    const res = await axios.post('api/user/register', values)
+    setTokens(res.data, false)
+    axiosRequestInterceptor(false)
+    dispatch(setSession(false))
+    dispatch(getUser())
+    dispatch(enqueueSnackbar({ message: 'Registration Success', options: { variant: 'success' } }))
+    handleClose()
+  } catch (err) {
+    dispatch(handleErrors(err.response.data, setFieldError, 'Registration'))
+  } finally {
+    dispatch(setRegistrationRequest(true))
+  }
+}
+
+export const handleErrors = (errorResponse, setFieldError, request) => (dispatch) => {
+  if (errorResponse) {
+    if (errorResponse.validation) {
+      errorResponse.errors.forEach((error) => {
+        setFieldError(error.param, error.msg)
+      })
+    } else if (errorResponse.authentication) {
+      setFieldError(errorResponse.error.param, errorResponse.error.msg)
+    } else {
+      dispatch(enqueueSnackbar({ message: errorResponse.msg || `${request} Failed`, options: { variant: 'error' } }))
+    }
+  } else {
+    dispatch(enqueueSnackbar({ message: `${request} Failed`, options: { variant: 'error' } }))
+  }
+}
 
 export const setSession = (session) => (dispatch) => {
   dispatch({ type: SET_SESSION, payload: session })

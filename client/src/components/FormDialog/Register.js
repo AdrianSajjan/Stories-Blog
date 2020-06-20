@@ -1,6 +1,5 @@
-import axios from 'axios'
 import * as Yup from 'yup'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import React, { Fragment, useState } from 'react'
 import { useFormik } from 'formik'
 import {
@@ -16,8 +15,7 @@ import {
 } from '@material-ui/core'
 import { Lock, Visibility, VisibilityOff } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
-import { setSession, getUser, enqueueSnackbar } from '../../actions'
-import { setTokens, axiosRequestInterceptor } from '../../utils'
+import { registerUser, enqueueSnackbar } from '../../actions'
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -79,8 +77,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Register = (props) => {
   const [visible, setVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
 
+  const loading = useSelector((state) => state.request.registration)
   const dispatch = useDispatch()
   const classes = useStyles()
   const formik = useFormik({
@@ -104,64 +102,8 @@ const Register = (props) => {
         .equals([Yup.ref('password'), null], "Passwords don't match")
     }),
     onSubmit: async (values, actions) => {
-      if (isUserLoading)
-        return dispatch(
-          enqueueSnackbar({
-            message: 'User Loading. Please wait.',
-            options: {
-              variant: 'info'
-            }
-          })
-        )
-      try {
-        setLoading(true)
-        const res = await axios.post('api/user/register', values)
-        setTokens(res.data, false)
-        axiosRequestInterceptor(false)
-        dispatch(setSession(false))
-        dispatch(getUser())
-        dispatch(
-          enqueueSnackbar({
-            message: 'Register Success',
-            options: {
-              variant: 'success'
-            }
-          })
-        )
-        actions.resetForm()
-        handleClose()
-      } catch (err) {
-        const errorResponse = err.response.data
-        if (errorResponse) {
-          if (errorResponse.validation) {
-            errorResponse.errors.forEach((error) => {
-              actions.setFieldError(error.param, error.msg)
-            })
-          } else if (errorResponse.authentication) {
-            actions.setFieldError(errorResponse.error.param, errorResponse.error.msg)
-          } else {
-            dispatch(
-              enqueueSnackbar({
-                message: errorResponse.msg || 'Registration Failed',
-                options: {
-                  variant: 'error'
-                }
-              })
-            )
-          }
-        } else {
-          dispatch(
-            enqueueSnackbar({
-              message: 'Registration Failed',
-              options: {
-                variant: 'error'
-              }
-            })
-          )
-        }
-      } finally {
-        setLoading(false)
-      }
+      if (isUserLoading) return dispatch(enqueueSnackbar({ message: 'User Loading! Please wait!' }))
+      dispatch(registerUser(values, actions.setFieldError, handleClose))
     }
   })
 
