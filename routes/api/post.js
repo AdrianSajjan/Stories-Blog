@@ -1,7 +1,7 @@
 const express = require('express')
 const { ObjectId } = require('mongoose').Types
 const { Post, User } = require('../../models')
-const { validateGenericPost, validateCustomPost, sanitizeHtml } = require('../../utils')
+const { validatePost, sanitizeHtml } = require('../../utils')
 const { authorizeProtectedRoute, authorizePrivateRoute, validateRequest } = require('../../middleware')
 
 const router = express.Router()
@@ -115,53 +115,11 @@ router.get('/author/:author', authorizeProtectedRoute, async (req, res) => {
 
 /**
  * @route : /api/post/
- * @type : GET
- * @access : Private
- * @desc : Create a Posts
- */
-router.post('/', [authorizePrivateRoute, validateRequest(validateGenericPost())], async (req, res) => {
-  try {
-    const post = {}
-    const layout = {}
-
-    const { id } = req.user
-    const { title, type, content, category, premium, tags, coverImage, images } = req.body
-
-    const user = await User.findById(id).select('username')
-
-    if (!user) return res.status(404).json({ msg: "User doesn't exist" })
-
-    layout.use = true
-    layout.format = type
-    layout.contents = content
-    if (images) layout.images = images
-
-    post.user = id
-    post.author = user.username
-    post.title = title
-    post.category = category
-    post.coverImage = coverImage
-    post.layout = layout
-    if (premium) post.premium = premium
-    if (tags) post.tags = tags
-
-    const savedPost = await Post.create(post)
-    await savedPost.populate('user', ['profileImage']).execPopulate()
-
-    res.json({ post: savedPost })
-  } catch (error) {
-    console.log(error.message)
-    res.status(500).send('Something went wrong. Please try again.')
-  }
-})
-
-/**
- * @route : /api/post/markdown
  * @type : POST
  * @access : Private
  * @desc : Create a Posts with custom HTML
  */
-router.post('/markdown', [authorizePrivateRoute, validateRequest(validateCustomPost())], async (req, res) => {
+router.post('/', [authorizePrivateRoute, validateRequest(validatePost())], async (req, res) => {
   try {
     const post = {}
     const html = {}
@@ -173,9 +131,7 @@ router.post('/markdown', [authorizePrivateRoute, validateRequest(validateCustomP
 
     if (!user) return res.status(404).json({ msg: "User doesn't exist" })
 
-    html.use = true
     html.content = sanitizeHtml(content)
-    if (css) html.css = css
 
     post.user = id
     post.author = user.username
@@ -198,58 +154,16 @@ router.post('/markdown', [authorizePrivateRoute, validateRequest(validateCustomP
 
 /**
  * @route : /api/post/
- * @type : PUT
- * @access : Private
- * @desc : Edit a Post
- */
-router.put('/:id', [authorizePrivateRoute, validateRequest(validateGenericPost())], async (req, res) => {
-  try {
-    const { id } = req.params
-    const { id: userId } = req.user
-
-    const { title, type, content, category, premium, tags, coverImage, images } = req.body
-
-    if (!ObjectId.isValid(id)) return res.status(400).json({ msg: 'Invalid Post' })
-
-    const post = await Post.findOne({ $and: [{ _id: id }, { user: userId }] })
-
-    if (!post) return res.status(404).json({ msg: 'Invalid Post' })
-
-    post.title = title
-    post.category = category
-    post.coverImage = coverImage
-
-    if (premium) post.premium = premium
-    if (tags) post.tags = tags
-
-    if (post.layout && post.layout.use === true) {
-      post.layout.contents = content
-      post.layout.format = type
-      if (images) post.layout.images = images
-    }
-
-    await post.save()
-    await post.populate('user', ['profileImage']).execPopulate()
-
-    res.json({ post })
-  } catch (error) {
-    console.log(error.message)
-    res.status(500).send('Something went wrong. Please try again.')
-  }
-})
-
-/**
- * @route : /api/post/
  * @type : GET
  * @access : Private
  * @desc : Edit a Post
  */
-router.put('/markdown/:id', [authorizePrivateRoute, validateRequest(validateCustomPost())], async (req, res) => {
+router.put('/:id', [authorizePrivateRoute, validateRequest(validatePost())], async (req, res) => {
   try {
     const { id } = req.params
     const { id: userId } = req.user
 
-    const { title, content, css, category, premium, tags, coverImage } = req.body
+    const { title, content, category, premium, tags, coverImage } = req.body
 
     if (!ObjectId.isValid(id)) return res.status(400).json({ msg: 'Invalid Post' })
 
@@ -260,14 +174,10 @@ router.put('/markdown/:id', [authorizePrivateRoute, validateRequest(validateCust
     post.title = title
     post.category = category
     post.coverImage = coverImage
+    post.html.content = content
 
     if (premium) post.premium = premium
     if (tags) post.tags = tags
-
-    if (post.html && post.html.use === true) {
-      post.html.content = content
-      if (css) post.html.css = css
-    }
 
     await post.save()
     await post.populate('user', ['profileImage']).execPopulate()

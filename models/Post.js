@@ -25,16 +25,8 @@ const PostSchema = new Schema({
     type: String,
     required: true
   },
-  layout: {
-    use: Boolean,
-    format: Number,
-    contents: [String],
-    images: [String]
-  },
   html: {
-    use: Boolean,
-    content: String,
-    css: String
+    content: String
   },
   createdAt: {
     type: Date,

@@ -15,3 +15,12 @@ export const categoryList = {
   Style: 'Style',
   Health: 'Health'
 }
+
+export const categorySelector = [
+  { value: 'Sports', label: 'Sports' },
+  { value: 'Food', label: 'Food' },
+  { value: 'Technology', label: 'Technology' },
+  { value: 'Travel', label: 'Travel' },
+  { value: 'Style', label: 'Style' },
+  { value: 'Health', label: 'Health' }
+]

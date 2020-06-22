@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Header = (props) => {
-  const { setFormDialogOpen, setSidebarOpen, setAuthorDialogOpen, setSubscribeDialogOpen } = props
+  const { setFormDialogOpen, setSidebarOpen, setSubscribeDialogOpen } = props
   const classes = useStyles()
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
   const isAuthor = useSelector((state) => state.user.isAuthor)
@@ -94,18 +94,13 @@ const Header = (props) => {
       setAnchorEl(null)
     }
 
-    const handleAuthorDialog = (event) => {
-      event.preventDefault()
-      setAuthorDialogOpen(true)
-    }
-
     return (
       <div>
         <Button variant="outlined" className={classes.hideSm} onClick={handleClick}>
           Account
         </Button>
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose} keepMounted>
-          <MenuItem component={RouterLink} to="/author" onClick={isAuthor ? handleClose : handleAuthorDialog}>
+          <MenuItem component={RouterLink} to={isAuthor ? '/author' : '/became-an-author'}>
             <Create fontSize="small" className={classes.accountIcons} />
             <span>{isAuthor ? 'Author' : 'Become an Author'}</span>
           </MenuItem>

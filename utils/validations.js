@@ -58,67 +58,12 @@ const validateUserRegistration = () => [
 ]
 
 const validateUserLogin = () => [
-  body('user')
-    .trim()
-    .not()
-    .isEmpty()
-    .withMessage('Please enter your username or email'),
+  body('user').trim().not().isEmpty().withMessage('Please enter your username or email'),
 
-  body('password')
-    .trim()
-    .not()
-    .isEmpty()
-    .withMessage('Password cannot be empty')
+  body('password').trim().not().isEmpty().withMessage('Password cannot be empty')
 ]
 
-const validateGenericPost = () => [
-  body('title')
-    .trim()
-    .not()
-    .isEmpty()
-    .withMessage('Title cannot be empty')
-    .isLength({ min: 10 })
-    .withMessage('Title must contain atleast 10 letters')
-    .matches(/[a-zA-Z0-9!_-]$/)
-    .withMessage('Title has invalid characters')
-    .matches(/[a-zA-Z]$/)
-    .withMessage('Title must contain letters')
-    .custom((value) => {
-      const wordLength = value.split(' ').length
-      if (wordLength < 3)
-        throw new Error('Title must contain atleast three words')
-      else return true
-    }),
-
-  body('coverImage')
-    .not()
-    .isEmpty()
-    .withMessage('Please provide URL to Cover Image')
-    .isURL()
-    .withMessage('Please provide a valid URL'),
-
-  body('type')
-    .not()
-    .isEmpty()
-    .withMessage('Please provide a layout')
-    .isNumeric()
-    .withMessage('Please provide a valid layout'),
-
-  body('content').isArray({ min: 1 }).withMessage('Content cannot be empty'),
-
-  body('content.*').not().isEmpty().withMessage('Content cannot be empty'),
-
-  body('images')
-    .optional()
-    .isArray({ min: 1 })
-    .withMessage('Images cannot be empty'),
-
-  body('images.*').optional().isURL().withMessage('Please provide a valid URL'),
-
-  body('category').not().isEmpty().withMessage('Please provide the category')
-]
-
-const validateCustomPost = () => [
+const validatePost = () => [
   body('title')
     .trim()
     .not()
@@ -138,19 +83,18 @@ const validateCustomPost = () => [
     .isURL()
     .withMessage('Please provide a valid URL'),
 
+  body('category').not().isEmpty().withMessage('Please provide the category'),
+
   body('content')
     .not()
     .isEmpty()
     .withMessage('Content cannot be empty')
     .isLength({ min: 100 })
-    .withMessage('Content cannot be less than 100 letters'),
-
-  body('category').not().isEmpty().withMessage('Please provide the category')
+    .withMessage('Content cannot be less than 100 letters')
 ]
 
 module.exports = {
   validateUserRegistration,
   validateUserLogin,
-  validateGenericPost,
-  validateCustomPost
+  validatePost
 }

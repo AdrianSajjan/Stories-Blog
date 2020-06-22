@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Sidebar = (props) => {
-  const { isOpen, setIsOpen, setFormDialogOpen, setAuthorDialogOpen, setSubscribeDialogOpen } = props
+  const { isOpen, setIsOpen, setFormDialogOpen, setSubscribeDialogOpen } = props
   const classes = useStyles()
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
   const isAuthor = useSelector((state) => state.user.isAuthor)
@@ -39,13 +39,6 @@ const Sidebar = (props) => {
 
   const handleOpen = () => {
     setIsOpen(true)
-  }
-
-  const handleAuthorDialog = (event) => {
-    if (!isAuthor) {
-      event.preventDefault()
-      setAuthorDialogOpen(true)
-    }
   }
 
   const handleSubscribeDialog = () => {
@@ -79,9 +72,8 @@ const Sidebar = (props) => {
             <ListItem
               button
               component={RouterLink}
-              to="/author"
+              to={isAuthor ? '/author' : '/become-an-author'}
               className={classes.nestedList}
-              onClick={handleAuthorDialog}
             >
               <Create fontSize="small" />
               <ListItemText

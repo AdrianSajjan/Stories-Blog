@@ -1,5 +1,5 @@
 import React from 'react'
-import { useHistory } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { Card, CardActionArea, CardContent, CardMedia, Typography, Grid } from '@material-ui/core/'
 import { ThumbDown, ThumbUp, Person, Category } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
@@ -45,15 +45,10 @@ const useStyles = makeStyles((theme) => ({
 
 const BlogCard = () => {
   const classes = useStyles()
-  const history = useHistory()
-
-  const handleClick = (event) => {
-    history.push('/')
-  }
 
   return (
     <Card>
-      <CardActionArea role="button" onClick={handleClick}>
+      <CardActionArea component={RouterLink} to="/@adrian/post/post-slug">
         <CardMedia className={classes.cardMedia} image="https://source.unsplash.com/random" title="Random Image" />
         <CardContent>
           <Typography gutterBottom variant="h5">
