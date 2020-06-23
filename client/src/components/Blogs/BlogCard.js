@@ -1,83 +1,84 @@
 import React from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { Card, CardActionArea, CardContent, CardMedia, Typography, Grid } from '@material-ui/core/'
-import { ThumbDown, ThumbUp, Person, Category } from '@material-ui/icons'
+import { Card, CardActionArea, CardContent, CardMedia, Typography, Chip } from '@material-ui/core/'
 import { makeStyles } from '@material-ui/core/styles'
+import moment from 'moment'
+import { blankProfile } from '../../constants'
 
 const useStyles = makeStyles((theme) => ({
   cardMedia: {
     height: 200
   },
-  subtitleText: {
-    marginBottom: theme.spacing(2)
+  chipCategory: {
+    paddingLeft: 5,
+    paddingRight: 5
   },
-  infoText: {
-    position: 'relative'
+  postTitle: {
+    marginTop: theme.spacing(2)
   },
-  voteText: {
-    position: 'relative'
+  postSubtitle: {
+    color: theme.palette.grey[700]
   },
-  avatarIcon: {
-    position: 'absolute',
-    left: 0
+  authorDiv: {
+    marginTop: theme.spacing(3),
+    display: 'flex'
   },
-  categoryIcon: {
-    position: 'absolute',
-    left: 0
+  authorProfileImg: {
+    width: 40,
+    height: 40,
+    objectFit: 'cover',
+    objectPosition: 'center',
+    borderRadius: '50%'
   },
-  avatarText: {
-    marginLeft: 30
+  authorInfo: {
+    marginLeft: theme.spacing(2),
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   },
-  categoryText: {
-    marginLeft: 30
-  },
-  thumbUpIcon: {
-    position: 'absolute',
-    right: theme.spacing(3),
-    top: -3
-  },
-  thumbDownIcon: {
-    position: 'absolute',
-    right: theme.spacing(3),
-    top: 3
+  postDate: {
+    color: theme.palette.grey[600]
   }
 }))
 
-const BlogCard = () => {
+const BlogCard = (props) => {
+  const { post } = props
   const classes = useStyles()
+
+  const getCoverImage = () => {
+    return post.coverImage && post.coverImage !== '' ? post.coverImage : 'https://source.unsplash.com/random'
+  }
+
+  const getProfileImage = () => {
+    return post.user.profileImage && post.user.profileImage !== '' ? post.user.profileImage : blankProfile
+  }
+
+  const getPostDate = () => {
+    return moment(post.createdAt).fromNow()
+  }
 
   return (
     <Card>
       <CardActionArea component={RouterLink} to="/@adrian/post/post-slug">
-        <CardMedia className={classes.cardMedia} image="https://source.unsplash.com/random" title="Random Image" />
+        <CardMedia className={classes.cardMedia} image={getCoverImage()} title="Random Image" />
         <CardContent>
-          <Typography gutterBottom variant="h5">
-            Lizard
+          <Chip label={post.category} color="primary" size="small" className={classes.chipCategory} />
+          <Typography className={classes.postTitle} gutterBottom>
+            {post.title}
           </Typography>
-          <Typography variant="body1" color="textSecondary" className={classes.subtitleText}>
-            Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents
-            except Antarctica
+          <Typography variant="body2" className={classes.postSubtitle}>
+            {post.description}
           </Typography>
-          <Grid container>
-            <Grid item xs={6}>
-              <Typography variant="body1" color="primary" className={classes.infoText} gutterBottom>
-                <Person className={classes.avatarIcon} />
-                <span className={classes.avatarText}>Adrian</span>
+          <div className={classes.authorDiv}>
+            <img src={getProfileImage()} alt="Profile" className={classes.authorProfileImg} />
+            <div className={classes.authorInfo}>
+              <Typography variant="subtitle2">{post.author}</Typography>
+              <Typography variant="caption" className={classes.postDate}>
+                {getPostDate()}
               </Typography>
-              <Typography variant="body1" color="primary" className={classes.infoText}>
-                <Category className={classes.categoryIcon} />
-                <span className={classes.categoryText}>Technology</span>
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" color="textSecondary" align="right" className={classes.voteText} gutterBottom>
-                <ThumbUp className={classes.thumbUpIcon} /> 8
-              </Typography>
-              <Typography variant="body1" color="textSecondary" align="right" className={classes.voteText}>
-                <ThumbDown className={classes.thumbDownIcon} /> 0
-              </Typography>
-            </Grid>
-          </Grid>
+            </div>
+          </div>
         </CardContent>
       </CardActionArea>
     </Card>

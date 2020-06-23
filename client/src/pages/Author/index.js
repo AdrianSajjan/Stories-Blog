@@ -1,2 +1,2 @@
 export { default as Author } from './Author'
-export { default as Markdown } from './Markdown'
+export { default as Markdown } from './Create'

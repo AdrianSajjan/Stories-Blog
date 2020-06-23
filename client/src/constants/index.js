@@ -1,3 +1,5 @@
 export * from './category'
 export * from './types'
 export * from './editor'
+export * from './profile'
+export * from './colors'

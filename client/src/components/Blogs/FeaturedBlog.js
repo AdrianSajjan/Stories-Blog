@@ -1,103 +1,88 @@
 import React, { Fragment } from 'react'
-import { Card, CardActionArea, CardContent, Typography, Grid } from '@material-ui/core'
-import { Person, Category } from '@material-ui/icons'
+import { useSelector } from 'react-redux'
+import { Card, CardActionArea, CardContent, Typography, Grid, Chip } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
   postBanner: {
-    marginBottom: theme.spacing(4),
     [theme.breakpoints.up('xs')]: {
       marginTop: theme.spacing(3)
     }
   },
-  actionArea: {
+  actionArea: (prop) => ({
     padding: [`${theme.spacing(1)}px`, '0'].join(' '),
-    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(https://source.unsplash.com/random)`,
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${prop.imageUrl})`,
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
-    position: 'relative',
-    minHeight: 280
-  },
+    position: 'relative'
+  }),
   cardContent: {
     marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
+    height: 300,
+    position: 'relative'
+  },
+  chipCategory: {
+    position: 'absolute',
+    backgroundColor: '#f06292',
+    paddingLeft: 5,
+    paddingRight: 5,
+    top: 5,
+    left: 5
+  },
+  postGrid: {
+    height: '100%'
+  },
+  postItem: {
+    height: '100%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   postTitle: {
     color: '#ffffff',
-    [theme.breakpoints.up('xs')]: {
-      fontSize: '2rem'
-    },
-    [theme.breakpoints.up('sm')]: {
-      fontSize: '2.5rem'
-    },
-    marginBottom: theme.spacing(1)
+    fontWeight: 'bold',
+    marginBottom: theme.spacing(2)
   },
   postSubtitle: {
     color: '#ffffff',
-    [theme.breakpoints.up('xs')]: {
-      fontSize: '1rem'
-    },
-    [theme.breakpoints.up('sm')]: {
-      fontSize: '1.1rem'
-    },
-    marginBottom: theme.spacing(1.5)
-  },
-  postAuthor: {
-    color: '#ffffff'
-  },
-  postCategory: {
-    color: '#ffffff'
-  },
-  infoText: {
-    position: 'relative'
-  },
-  avatarIcon: {
-    position: 'absolute',
-    left: 0,
-    color: '#ffffff'
-  },
-  categoryIcon: {
-    position: 'absolute',
-    left: 0,
-    color: '#ffffff'
-  },
-  avatarText: {
-    marginLeft: 30,
-    color: '#ffffff'
-  },
-  categoryText: {
-    marginLeft: 30,
-    color: '#ffffff'
+    marginBottom: theme.spacing(3)
   }
 }))
 
 const FeaturedBlog = () => {
-  const classes = useStyles()
+  const postLength = useSelector((state) => state.posts.all.posts.length)
+
+  if (postLength === 0) return null
+
+  const featuredPost = useSelector(
+    (state) => state.posts.all.posts[Math.floor(Math.random() * state.posts.all.posts.length)]
+  )
+  const classes = useStyles({
+    imageUrl: (featuredPost && featuredPost.coverImage) || 'https://source.unsplash.com/random'
+  })
 
   return (
     <Fragment>
       <Card className={classes.postBanner}>
         <CardActionArea className={classes.actionArea}>
-          <Grid container>
-            <Grid item md={8}>
-              <CardContent className={classes.cardContent}>
-                <Typography className={classes.postTitle}>Lizard</Typography>
-                <Typography className={classes.postSubtitle}>
-                  Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all
-                  continents except Antarctica
+          <CardContent className={classes.cardContent}>
+            <Chip label={featuredPost.category} className={classes.chipCategory} size="small" color="primary" />
+            <Grid container className={classes.postGrid}>
+              <Grid item xs={12} sm={10} className={classes.postItem}>
+                <Typography variant="h5" align="center" className={classes.postTitle}>
+                  {featuredPost.title}
                 </Typography>
-                <Typography variant="body1" className={classes.infoText} gutterBottom>
-                  <Person className={classes.avatarIcon} />
-                  <span className={classes.avatarText}>Adrian</span>
+                <Typography align="center" className={classes.postSubtitle}>
+                  {featuredPost.description}
                 </Typography>
-                <Typography variant="body1" className={classes.infoText}>
-                  <Category className={classes.categoryIcon} />
-                  <span className={classes.categoryText}>Technology</span>
-                </Typography>
-              </CardContent>
+              </Grid>
             </Grid>
-          </Grid>
+          </CardContent>
         </CardActionArea>
       </Card>
     </Fragment>

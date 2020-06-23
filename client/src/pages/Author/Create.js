@@ -1,21 +1,27 @@
 import * as Yup from 'yup'
 import React from 'react'
 import { useFormik } from 'formik'
+import { useDispatch } from 'react-redux'
 import { Container, Typography, Button, TextField, MenuItem } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import { Editor } from '@tinymce/tinymce-react'
 import { categorySelector, TinyMCEApiKey, editorInit } from '../../constants'
+import { createPost } from '../../actions'
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    paddingTop: theme.spacing(3)
+    paddingTop: theme.spacing(4)
+  },
+  title: {
+    fontFamily: 'Metal Mania',
+    letterSpacing: 1
   },
   grid: {
     display: 'flex',
     justifyContent: 'flex-end'
   },
   form: {
-    marginTop: theme.spacing(1.5),
+    marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
     display: 'flex',
     flexDirection: 'column'
@@ -61,8 +67,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Markdown = () => {
+const CreatePost = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const formik = useFormik({
     initialValues: {
       title: '',
@@ -78,8 +85,8 @@ const Markdown = () => {
         .required('Field is required')
         .oneOf(categorySelector.map((category) => category.value))
     }),
-    onSubmit: (values, actions) => {
-      console.table(values)
+    onSubmit: (values) => {
+      dispatch(createPost(values))
     }
   })
 
@@ -87,8 +94,8 @@ const Markdown = () => {
 
   return (
     <Container className={classes.container}>
-      <Typography variant="h6" align="center">
-        Create Markdown Post
+      <Typography variant="h5" align="center" className={classes.title}>
+        Create Post
       </Typography>
       <form className={classes.form} onSubmit={handleSubmit} onReset={resetForm}>
         <TextField
@@ -166,4 +173,4 @@ const Markdown = () => {
   )
 }
 
-export default Markdown
+export default CreatePost

@@ -16,6 +16,10 @@ const PostSchema = new Schema({
     type: String,
     required: true
   },
+  description: {
+    type: String,
+    required: true
+  },
   slug: {
     type: String,
     required: true,
@@ -26,7 +30,7 @@ const PostSchema = new Schema({
     required: true
   },
   html: {
-    content: String
+    type: String
   },
   createdAt: {
     type: Date,

@@ -7,30 +7,6 @@ const { authorizeProtectedRoute, authorizePrivateRoute, validateRequest } = requ
 const router = express.Router()
 
 /**
- * @route : /api/post
- * @type : GET
- * @access : Protected
- * @desc : Return all Posts
- */
-router.get('/', authorizeProtectedRoute, async (req, res) => {
-  try {
-    const hasAccount = req.account
-    const posts = {
-      freePosts: [],
-      premiumPosts: []
-    }
-
-    posts.freePosts = await Post.find({ premium: false })
-    if (hasAccount) posts.premiumPosts = await Post.find({ premium: true })
-
-    res.json({ posts })
-  } catch (error) {
-    console.log(error.message)
-    res.status(500).send('Something went wrong. Please try again.')
-  }
-})
-
-/**
  * @route : /api/post/:slug
  * @type : GET
  * @access : Protected
@@ -43,8 +19,9 @@ router.get('/:slug', authorizeProtectedRoute, async (req, res) => {
 
     const post = await Post.find({ slug: slug })
 
-    if (post.premium && hasAccount) res.json({ post })
-    else res.status(403).json({ msg: 'Create an account to view this post.' })
+    if (!hasAccount && post.premium) post.html = ''
+
+    res.json({ post })
   } catch (error) {
     console.log(error.message)
     res.status(500).send('Something went wrong. Please try again.')
@@ -59,21 +36,21 @@ router.get('/:slug', authorizeProtectedRoute, async (req, res) => {
  */
 router.get('/category/:category', authorizeProtectedRoute, async (req, res) => {
   try {
+    const { last } = req.query
     const { category } = req.params
     const hasAccount = req.account
-    const posts = {
-      freePosts: [],
-      premiumPosts: []
-    }
 
-    posts.freePosts = await Post.find({
-      $and: [{ premium: false }, { category: category }]
-    }).populate('user', ['profileImage'])
+    const posts =
+      last === ''
+        ? await Post.find({ category: category }).populate('user', ['profileImage']).limit(6)
+        : await Post.find({ $and: [{ _id: { $gt: last } }, { category: category }] })
+            .populate('user', ['profileImage'])
+            .limit(6)
 
-    if (hasAccount)
-      posts.premiumPosts = await Post.find({
-        $and: [{ premium: true }, { category: category }]
-      }).populate('user', ['profileImage'])
+    if (!hasAccount)
+      posts.forEach((post) => {
+        if (post.premium) post.html = ''
+      })
 
     res.json({ posts })
   } catch (error) {
@@ -90,21 +67,38 @@ router.get('/category/:category', authorizeProtectedRoute, async (req, res) => {
  */
 router.get('/author/:author', authorizeProtectedRoute, async (req, res) => {
   try {
+    const { last } = req.query
     const { author } = req.params
     const hasAccount = req.account
-    const posts = {
-      freePosts: [],
-      premiumPosts: []
-    }
 
-    posts.freePosts = await Post.find({
-      $and: [{ premium: false }, { author: author }]
-    }).populate('user', ['profileImage'])
+    const posts =
+      last === ''
+        ? await Post.find({ author: author }).populate('user', ['profileImage'])
+        : await Post.find({ $and: [{ _id: { $gt: last } }, { author: author }] }).populate('user', ['profileImage'])
 
-    if (hasAccount)
-      posts.premiumPosts = await Post.find({
-        $and: [{ premium: true }, { author: author }]
-      }).populate('user', ['profileImage'])
+    if (!hasAccount)
+      posts.forEach((post) => {
+        if (post.premium) post.html = ''
+      })
+
+    res.json({ posts })
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).send('Something went wrong. Please try again.')
+  }
+})
+
+/**
+ * @route : /api/post/
+ * @type : GET
+ * @access : Private
+ * @desc : Get self posts
+ */
+router.get('/', [authorizePrivateRoute], async (req, res) => {
+  try {
+    const { id } = req.user
+
+    const posts = await Post.find({ user: id }).populate('user', ['profileImage'])
 
     res.json({ posts })
   } catch (error) {
@@ -122,21 +116,19 @@ router.get('/author/:author', authorizeProtectedRoute, async (req, res) => {
 router.post('/', [authorizePrivateRoute, validateRequest(validatePost())], async (req, res) => {
   try {
     const post = {}
-    const html = {}
 
     const { id } = req.user
-    const { title, content, css, category, premium, tags, coverImage } = req.body
+    const { title, description, content, category, premium, tags, coverImage } = req.body
 
     const user = await User.findById(id).select('username')
 
     if (!user) return res.status(404).json({ msg: "User doesn't exist" })
 
-    html.content = sanitizeHtml(content)
-
     post.user = id
     post.author = user.username
     post.title = title
-    post.html = html
+    post.description = description
+    post.html = sanitizeHtml(content)
     post.category = category
     post.coverImage = coverImage
     if (premium) post.premium = premium
@@ -163,7 +155,7 @@ router.put('/:id', [authorizePrivateRoute, validateRequest(validatePost())], asy
     const { id } = req.params
     const { id: userId } = req.user
 
-    const { title, content, category, premium, tags, coverImage } = req.body
+    const { title, description, content, category, premium, tags, coverImage } = req.body
 
     if (!ObjectId.isValid(id)) return res.status(400).json({ msg: 'Invalid Post' })
 
@@ -174,7 +166,8 @@ router.put('/:id', [authorizePrivateRoute, validateRequest(validatePost())], asy
     post.title = title
     post.category = category
     post.coverImage = coverImage
-    post.html.content = content
+    post.description = description
+    post.html = sanitizeHtml(content)
 
     if (premium) post.premium = premium
     if (tags) post.tags = tags

@@ -11,9 +11,11 @@ export const getRefreshToken = (persistSession) => {
 
 export const setTokens = (tokens, persistSession) => {
   if (persistSession) {
+    sessionStorage.clear()
     localStorage.setItem(accessToken, tokens.accessToken)
     localStorage.setItem(refreshToken, tokens.refreshToken)
   } else {
+    localStorage.clear()
     sessionStorage.setItem(accessToken, tokens.accessToken)
     sessionStorage.setItem(refreshToken, tokens.refreshToken)
   }

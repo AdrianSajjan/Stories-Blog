@@ -69,12 +69,20 @@ const validatePost = () => [
     .not()
     .isEmpty()
     .withMessage('Title cannot be empty')
-    .isLength({ min: 10 })
+    .isLength({ min: 20 })
     .withMessage('Title must contain atleast 10 letters')
     .matches(/[a-zA-Z0-9!_-]$/)
     .withMessage('Title has invalid characters')
     .matches(/[a-zA-Z]$/)
     .withMessage('Title must contain letters'),
+
+  body('description')
+    .trim()
+    .not()
+    .isEmpty()
+    .withMessage('Title cannot be empty')
+    .isLength({ min: 50 })
+    .withMessage('Title must contain atleast 10 letters'),
 
   body('coverImage')
     .not()
@@ -89,8 +97,8 @@ const validatePost = () => [
     .not()
     .isEmpty()
     .withMessage('Content cannot be empty')
-    .isLength({ min: 100 })
-    .withMessage('Content cannot be less than 100 letters')
+    .isLength({ min: 400 })
+    .withMessage('Content cannot be less than 400 letters')
 ]
 
 module.exports = {
