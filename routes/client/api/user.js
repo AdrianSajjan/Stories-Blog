@@ -1,5 +1,6 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const { User } = require('../../../models')
 const { validateRequest, authorizePrivateRoute } = require('../../../middleware')
@@ -116,6 +117,44 @@ router.get('/', authorizePrivateRoute, async (req, res) => {
   } catch (error) {
     console.error(error.message)
     res.status(500).send('Something went wrong. Please Try Again.')
+  }
+})
+
+/**
+ * @route : /api/user/tokens
+ * @type : POST
+ * @access : Private
+ * @desc : Get OAUTH tokens
+ */
+router.post('/oauth2', async (req, res) => {
+  try {
+    const { refreshToken: _refreshToken } = req.body
+
+    if (!_refreshToken) {
+      console.log('No Refresh Token')
+      return res.status(401).json({
+        authentication: true,
+        msg: 'Not Authorized! Access Rejected.'
+      })
+    }
+
+    const decoded = jwt.verify(_refreshToken, process.env.REFRESH_SECRET)
+
+    const payload = {
+      user: {
+        id: decoded.user.id
+      }
+    }
+
+    const { accessToken, refreshToken } = generateOAuth2Tokens(payload)
+
+    res.json({ refreshToken, accessToken })
+  } catch (err) {
+    console.log(err.message)
+    res.status(401).json({
+      authentication: true,
+      msg: 'Token Invalid! Access Rejected.'
+    })
   }
 })
 
