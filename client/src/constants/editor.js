@@ -22,6 +22,13 @@ export const content_style = `
   body {
     font-size: 16px;
     font-family: 'Poppins', sans-serif;
+    background-color: transparent;
+  }
+
+  * {
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    background-color: transparent;
   }
 `
 
@@ -34,7 +41,7 @@ export const font_formats = [
 export const fontsize_formats = '8px 10px 12px 14px 16px 18px 20px 24px 36px 48px 72px'
 
 export const content_css = [
-  'https://fonts.googleapis.com/css2?family=Metal+Mania&family=Poppins:wght@400;700&family=Roboto+Mono:wght@400;600'
+  'https://fonts.googleapis.com/css2?family=Metal+Mania&family=Poppins:wght@400;700&family=Roboto+Mono:wght@400;600&display=swap'
 ]
 
 export const editorInit = {

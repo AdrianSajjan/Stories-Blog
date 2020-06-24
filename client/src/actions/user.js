@@ -6,7 +6,7 @@ import { GET_USER, SET_USER, USER_ERROR, SET_SESSION } from '../constants'
 export const loginUser = (values, setFieldError, handleClose, persistSession) => async (dispatch) => {
   try {
     dispatch(setLoginRequest(true))
-    const res = await axios.post('api/user/login', values)
+    const res = await axios.post('/api/user/login', values)
     setTokens(res.data, persistSession)
     axiosRequestInterceptor(persistSession)
     dispatch(setSession(persistSession))
@@ -23,7 +23,7 @@ export const loginUser = (values, setFieldError, handleClose, persistSession) =>
 export const registerUser = (values, setFieldError, handleClose) => async (dispatch) => {
   try {
     dispatch(setRegistrationRequest(true))
-    const res = await axios.post('api/user/register', values)
+    const res = await axios.post('/api/user/register', values)
     setTokens(res.data, false)
     axiosRequestInterceptor(false)
     dispatch(setSession(false))

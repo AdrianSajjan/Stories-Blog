@@ -64,7 +64,7 @@ export default function (state = initialState, actions) {
       return {
         ...state,
         [key]: {
-          posts: [],
+          ...state[key],
           loading: true
         }
       }
@@ -122,7 +122,9 @@ export default function (state = initialState, actions) {
         all: {
           posts: [
             ...state.all.posts,
-            ...[value].filter((a) => (state.all.posts.length ? state.all.posts.some((b) => b._id === a._id) : true))
+            ...[value].filter((a) =>
+              !a ? false : state.all.posts.length ? state.all.posts.some((b) => b._id === a._id) : true
+            )
           ]
         },
         current: {
@@ -135,7 +137,7 @@ export default function (state = initialState, actions) {
       return {
         ...state,
         self: {
-          ...state.self,
+          posts: [],
           loading: true
         }
       }

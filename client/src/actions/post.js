@@ -6,7 +6,9 @@ import {
   GET_AUTHOR_POSTS,
   SET_AUTHOR_POSTS,
   GET_SELF_POSTS,
-  SET_SELF_POSTS
+  SET_SELF_POSTS,
+  GET_CURRENT_POST,
+  SET_CURRENT_POST
 } from '../constants'
 
 export const getRecentPosts = () => async (dispatch, getState) => {
@@ -79,5 +81,17 @@ export const editPost = (values) => async (dispatch) => {
     dispatch(enqueueSnackbar({ message: 'Post has been create successfully', options: { variant: 'success' } }))
   } catch (err) {
     dispatch(enqueueSnackbar({ message: "Couldn't create post", options: { variant: 'error' } }))
+  }
+}
+
+export const getPostBySlug = (slug) => async (dispatch) => {
+  dispatch({ type: GET_CURRENT_POST })
+
+  try {
+    const res = await axios.get(`/api/post/${slug}`)
+    dispatch({ type: SET_CURRENT_POST, value: res.data.post })
+  } catch (err) {
+    dispatch({ type: SET_CURRENT_POST, value: null })
+    dispatch(enqueueSnackbar({ message: 'Post not found', options: { variant: 'error' } }))
   }
 }

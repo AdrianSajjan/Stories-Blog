@@ -55,12 +55,17 @@ const BlogCard = (props) => {
   }
 
   const getPostDate = () => {
-    return moment(post.createdAt).fromNow()
+    const timeFromNow = moment(post.createdAt).fromNow()
+    return timeFromNow.startsWith('a') ? `A${timeFromNow.substring(1)}` : timeFromNow
+  }
+
+  const getPostURL = () => {
+    return `/@${post.author}/${post.slug}`
   }
 
   return (
     <Card>
-      <CardActionArea component={RouterLink} to="/@adrian/post/post-slug">
+      <CardActionArea component={RouterLink} to={getPostURL()}>
         <CardMedia className={classes.cardMedia} image={getCoverImage()} title="Random Image" />
         <CardContent>
           <Chip label={post.category} color="primary" size="small" className={classes.chipCategory} />

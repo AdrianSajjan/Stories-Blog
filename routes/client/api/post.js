@@ -1,8 +1,8 @@
 const express = require('express')
 const { ObjectId } = require('mongoose').Types
-const { Post, User } = require('../../models')
-const { validatePost, sanitizeHtml } = require('../../utils')
-const { authorizeProtectedRoute, authorizePrivateRoute, validateRequest } = require('../../middleware')
+const { Post, User } = require('../../../models')
+const { validatePost, sanitizeHtml } = require('../../../utils')
+const { authorizeProtectedRoute, authorizePrivateRoute, validateRequest } = require('../../../middleware')
 
 const router = express.Router()
 
@@ -17,7 +17,7 @@ router.get('/:slug', authorizeProtectedRoute, async (req, res) => {
     const { slug } = req.params
     const hasAccount = req.account
 
-    const post = await Post.find({ slug: slug })
+    const post = await Post.findOne({ slug: slug })
 
     if (!hasAccount && post.premium) post.html = ''
 

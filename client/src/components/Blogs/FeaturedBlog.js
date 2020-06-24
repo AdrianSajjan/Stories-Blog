@@ -1,7 +1,10 @@
 import React, { Fragment } from 'react'
+import moment from 'moment'
+import { Link as RouterLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Card, CardActionArea, CardContent, Typography, Grid, Chip } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { blankProfile } from '../../constants'
 
 const useStyles = makeStyles((theme) => ({
   postBanner: {
@@ -10,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   actionArea: (prop) => ({
-    padding: [`${theme.spacing(1)}px`, '0'].join(' '),
     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${prop.imageUrl})`,
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
@@ -18,24 +20,42 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative'
   }),
   cardContent: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    height: 300,
-    position: 'relative'
+    padding: theme.spacing(1.5)
+  },
+  categoryDiv: {
+    height: 50,
+    marginBottom: theme.spacing(2)
   },
   chipCategory: {
-    position: 'absolute',
     backgroundColor: '#f06292',
     paddingLeft: 5,
-    paddingRight: 5,
-    top: 5,
-    left: 5
+    paddingRight: 5
   },
-  postGrid: {
-    height: '100%'
+  authorDiv: {
+    display: 'flex',
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    height: 50,
+    marginTop: theme.spacing(2),
+    paddingBottom: 5,
+    paddingRight: 5
+  },
+  authorProfileImg: {
+    width: 45,
+    height: 45,
+    objectFit: 'cover',
+    objectPosition: 'center',
+    borderRadius: '50%'
+  },
+  authorInfo: {
+    marginRight: theme.spacing(2),
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    color: '#fff'
   },
   postItem: {
-    height: '100%',
     marginLeft: 'auto',
     marginRight: 'auto',
     display: 'flex',
@@ -65,14 +85,31 @@ const FeaturedBlog = () => {
     imageUrl: (featuredPost && featuredPost.coverImage) || 'https://source.unsplash.com/random'
   })
 
+  const getProfileImage = () => {
+    return featuredPost.user.profileImage && featuredPost.user.profileImage !== ''
+      ? featuredPost.user.profileImage
+      : blankProfile
+  }
+
+  const getPostDate = () => {
+    const timeFromNow = moment(featuredPost.createdAt).fromNow()
+    return timeFromNow.startsWith('a') ? `A${timeFromNow.substring(1)}` : timeFromNow
+  }
+
+  const getPostURL = () => {
+    return `/@${featuredPost.author}/${featuredPost.slug}`
+  }
+
   if (postLength === 0) return null
 
   return (
     <Fragment>
       <Card className={classes.postBanner}>
-        <CardActionArea className={classes.actionArea}>
+        <CardActionArea className={classes.actionArea} component={RouterLink} to={getPostURL()}>
           <CardContent className={classes.cardContent}>
-            <Chip label={featuredPost.category} className={classes.chipCategory} size="small" color="primary" />
+            <div className={classes.categoryDiv}>
+              <Chip label={featuredPost.category} className={classes.chipCategory} size="small" color="primary" />
+            </div>
             <Grid container className={classes.postGrid}>
               <Grid item xs={12} sm={10} className={classes.postItem}>
                 <Typography variant="h5" align="center" className={classes.postTitle}>
@@ -83,6 +120,17 @@ const FeaturedBlog = () => {
                 </Typography>
               </Grid>
             </Grid>
+            <div className={classes.authorDiv}>
+              <img src={getProfileImage()} alt="Profile" className={classes.authorProfileImg} />
+              <div className={classes.authorInfo}>
+                <Typography variant="subtitle2" color="inherit">
+                  {featuredPost.author}
+                </Typography>
+                <Typography variant="caption" color="inherit" align="right">
+                  {getPostDate()}
+                </Typography>
+              </div>
+            </div>
           </CardContent>
         </CardActionArea>
       </Card>
