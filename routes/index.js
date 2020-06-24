@@ -1,4 +1,4 @@
-const userRouter = require('./api/user')
-const postRouter = require('./api/post')
+const userRouter = require('./client/api/user')
+const postRouter = require('./client/api/post')
 
 module.exports = { userRouter, postRouter }

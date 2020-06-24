@@ -1,9 +1,9 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
-const { ObjectId } = require('mongoose').Types
-const { User } = require('../../models')
-const { validateRequest, authorizePrivateRoute } = require('../../middleware')
-const { validateUserRegistration, generateOAuth2Tokens, validateUserLogin } = require('../../utils')
+
+const { User } = require('../../../models')
+const { validateRequest, authorizePrivateRoute } = require('../../../middleware')
+const { validateUserRegistration, generateOAuth2Tokens, validateUserLogin } = require('../../../utils')
 
 const router = express.Router()
 

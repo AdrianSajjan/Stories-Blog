@@ -57,14 +57,15 @@ const useStyles = makeStyles((theme) => ({
 const FeaturedBlog = () => {
   const postLength = useSelector((state) => state.posts.all.posts.length)
 
-  if (postLength === 0) return null
-
   const featuredPost = useSelector(
     (state) => state.posts.all.posts[Math.floor(Math.random() * state.posts.all.posts.length)]
   )
+
   const classes = useStyles({
     imageUrl: (featuredPost && featuredPost.coverImage) || 'https://source.unsplash.com/random'
   })
+
+  if (postLength === 0) return null
 
   return (
     <Fragment>
