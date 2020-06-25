@@ -22,14 +22,23 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     padding: theme.spacing(1.5)
   },
-  categoryDiv: {
+  chipDiv: {
     height: 50,
-    marginBottom: theme.spacing(2)
+    marginBottom: theme.spacing(1),
+    display: 'flex',
+    flexWrap: true
   },
   chipCategory: {
     backgroundColor: '#f06292',
     paddingLeft: 5,
-    paddingRight: 5
+    paddingRight: 5,
+    marginBottom: theme.spacing(1),
+    marginRight: theme.spacing(1.5)
+  },
+  chipPremium: {
+    paddingLeft: 5,
+    paddingRight: 5,
+    marginBottom: theme.spacing(1)
   },
   authorDiv: {
     display: 'flex',
@@ -107,8 +116,11 @@ const FeaturedBlog = () => {
       <Card className={classes.postBanner}>
         <CardActionArea className={classes.actionArea} component={RouterLink} to={getPostURL()}>
           <CardContent className={classes.cardContent}>
-            <div className={classes.categoryDiv}>
+            <div className={classes.chipDiv}>
               <Chip label={featuredPost.category} className={classes.chipCategory} size="small" color="primary" />
+              {featuredPost.premium && (
+                <Chip label="Premium" color="primary" size="small" className={classes.chipPremium} />
+              )}
             </div>
             <Grid container className={classes.postGrid}>
               <Grid item xs={12} sm={10} className={classes.postItem}>

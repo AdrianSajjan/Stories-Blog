@@ -1,10 +1,11 @@
 import React, { Fragment, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { SwipeableDrawer, List, ListItem, ListItemText, Collapse } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { ExpandLess, ExpandMore, Create, AccountBox, ExitToApp } from '@material-ui/icons'
 import { navLinks } from '../../constants'
+import { toggleSidebar, toggleFormDialog, toggleSubscribeDialog } from '../../actions'
 
 const useStyles = makeStyles((theme) => ({
   drawerContainer: {
@@ -23,26 +24,27 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Sidebar = (props) => {
-  const { isOpen, setIsOpen, setFormDialogOpen, setSubscribeDialogOpen } = props
+  const dispatch = useDispatch()
   const classes = useStyles()
+  const isOpen = useSelector((state) => state.misc.sidebarOpen)
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
   const isAuthor = useSelector((state) => state.user.isAuthor)
 
   const handleFormDialog = () => {
     handleClose()
-    setFormDialogOpen(true)
+    dispatch(toggleFormDialog(true))
   }
 
   const handleClose = () => {
-    setIsOpen(false)
+    dispatch(toggleSidebar(false))
   }
 
   const handleOpen = () => {
-    setIsOpen(true)
+    dispatch(toggleSidebar(true))
   }
 
   const handleSubscribeDialog = () => {
-    setSubscribeDialogOpen(true)
+    dispatch(toggleSubscribeDialog(true))
   }
 
   const LoginButton = () => {
@@ -121,7 +123,14 @@ const Sidebar = (props) => {
         <Collapse in={categoriesOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             {navLinks.map((link) => (
-              <ListItem button component={RouterLink} to={link.url} key={link.id} className={classes.nestedList}>
+              <ListItem
+                button
+                component={RouterLink}
+                to={link.url}
+                key={link.id}
+                className={classes.nestedList}
+                onClick={handleClose}
+              >
                 <ListItemText primary={link.name} primaryTypographyProps={{ variant: 'body1' }} />
               </ListItem>
             ))}

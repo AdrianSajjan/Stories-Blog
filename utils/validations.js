@@ -84,12 +84,7 @@ const validatePost = () => [
     .isLength({ min: 50 })
     .withMessage('Title must contain atleast 10 letters'),
 
-  body('coverImage')
-    .not()
-    .isEmpty()
-    .withMessage('Please provide URL to Cover Image')
-    .isURL()
-    .withMessage('Please provide a valid URL'),
+  body('coverImage').optional().isURL().withMessage('Please provide a valid URL'),
 
   body('category').not().isEmpty().withMessage('Please provide the category'),
 

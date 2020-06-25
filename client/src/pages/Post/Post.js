@@ -1,9 +1,10 @@
 import ReactHtmlParser from 'react-html-parser'
 import moment from 'moment'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { Container, Grid, Typography } from '@material-ui/core'
+import { Container, Grid, Typography, IconButton, Button } from '@material-ui/core'
+import { ThumbUp, ThumbDown } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/styles'
 import { getPostBySlug } from '../../actions'
 import { blankProfile } from '../../constants'
@@ -50,7 +51,36 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.grey[600]
   },
   html: {
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(2)
+  },
+  premiumDiv: {
+    marginTop: theme.spacing(3),
+    height: '50vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  premiumText: {
+    marginBottom: theme.spacing(1),
+    fontWeight: 'bold'
+  },
+  voteDiv: {
+    display: 'flex',
+    flexWrap: true,
+    alignItems: 'center'
+  },
+  thumbUpDiv: {
+    display: 'flex',
+    alignItems: 'center',
+    marginRight: theme.spacing(2),
+    marginBottom: theme.spacing(1)
+  },
+  thumbDownDiv: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: theme.spacing(1)
   }
 }))
 
@@ -112,7 +142,34 @@ const Post = () => {
               {getPostDate()}
             </Typography>
           </div>
-          <div className={classes.html}>{ReactHtmlParser(getHTMLContent())}</div>
+          {!post.premium ? (
+            <Fragment>
+              <div className={classes.html}>{ReactHtmlParser(getHTMLContent())}</div>
+              <div className={classes.voteDiv}>
+                <div className={classes.thumbUpDiv}>
+                  <IconButton>
+                    <ThumbUp />
+                  </IconButton>
+                  <Typography variant="subtitle2">{post.upvote || 0}</Typography>
+                </div>
+                <div className={classes.thumbDownDiv}>
+                  <IconButton>
+                    <ThumbDown />
+                  </IconButton>
+                  <Typography variant="subtitle2">{post.downvote || 0}</Typography>
+                </div>
+              </div>
+            </Fragment>
+          ) : (
+            <div className={classes.premiumDiv}>
+              <Typography variant="body1" className={classes.premiumText} align="center">
+                This post is marked as premium. Please create an account to see this post.
+              </Typography>
+              <Button variant="contained" color="primary">
+                <Typography variant="button">Sign In or Create an Account</Typography>
+              </Button>
+            </div>
+          )}
         </Grid>
       </Grid>
     </Container>

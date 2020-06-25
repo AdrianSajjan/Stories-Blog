@@ -2,8 +2,8 @@ export const TinyMCEApiKey = 'f5vxz3lkvmh5zkhmal129sxmskybn2wef789jf1dzjy1yjo4'
 
 export const plugins = [
   'advlist autolink lists link image charmap',
-  'code  autoresize anchor textcolor emoticons',
-  'insertdatetime media table code preview'
+  'code autoresize anchor textcolor emoticons nonbreaking',
+  'insertdatetime media table code preview paste'
 ]
 
 export const toolbar1 = [
@@ -15,7 +15,7 @@ export const toolbar1 = [
   'alignleft aligncenter alignright alignjustify',
   'link image emoticons charmap',
   'table insertdatetime',
-  'code preview'
+  'code preview removeFormat'
 ].join(' | ')
 
 export const content_style = `
@@ -24,11 +24,9 @@ export const content_style = `
     font-family: 'Poppins', sans-serif;
     background-color: transparent;
   }
-
-  * {
-    font-size: 16px;
-    font-family: 'Poppins', sans-serif;
-    background-color: transparent;
+  
+  p {
+    background-color: transparent
   }
 `
 
@@ -50,7 +48,9 @@ export const editorInit = {
   icons: 'thin',
   statusbar: false,
   menubar: false,
+  paste_as_text: true,
   toolbar_mode: 'wrap',
+  nonbreaking_force_tab: true,
   plugins,
   toolbar1,
   font_formats,

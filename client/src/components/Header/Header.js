@@ -1,15 +1,21 @@
 import React, { Fragment, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 import { Menu as MenuIcon } from '@material-ui/icons'
-import { Toolbar, Button, Typography, IconButton, Link, Menu, MenuItem } from '@material-ui/core'
+import { Toolbar, Button, Typography, IconButton, Link, Menu, MenuItem, Container } from '@material-ui/core'
 import { ExitToApp, AccountBox, Create } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import { navLinks } from '../../constants'
+import { toggleSidebar, toggleFormDialog, toggleSubscribeDialog } from '../../actions'
 
 const useStyles = makeStyles((theme) => ({
   mainToolbar: {
     borderBottom: ['1px', 'solid', theme.palette.divider].join(' ')
+  },
+  mainContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   toolbarTitle: {
     flex: 1,
@@ -45,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   toolbarNav: {
-    justifyContent: 'space-between',
     borderBottom: ['1px', 'solid', theme.palette.divider].join(' '),
     [theme.breakpoints.down('sm')]: {
       display: 'none'
@@ -54,27 +59,32 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex'
     }
   },
+  navContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    overflowX: 'auto'
+  },
   accountIcons: {
     marginRight: theme.spacing(1.5)
   }
 }))
 
-const Header = (props) => {
-  const { setFormDialogOpen, setSidebarOpen, setSubscribeDialogOpen } = props
+const Header = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
   const isAuthor = useSelector((state) => state.user.isAuthor)
 
   const handleFormDialogOpen = () => {
-    setFormDialogOpen(true)
+    dispatch(toggleFormDialog(true))
   }
 
   const handleSidebarOpen = () => {
-    setSidebarOpen(true)
+    dispatch(toggleSidebar(true))
   }
 
   const handleSubscribeDialog = () => {
-    setSubscribeDialogOpen(true)
+    dispatch(toggleSubscribeDialog(true))
   }
 
   const LoginButton = () => (
@@ -120,29 +130,33 @@ const Header = (props) => {
   return (
     <Fragment>
       <Toolbar component="header" className={classes.mainToolbar}>
-        <Button className={classes.hideSm} onClick={handleSubscribeDialog}>
-          <Typography variant="button">Subscribe</Typography>
-        </Button>
+        <Container maxWidth="md" className={classes.mainContainer}>
+          <Button className={classes.hideSm} onClick={handleSubscribeDialog}>
+            <Typography variant="button">Subscribe</Typography>
+          </Button>
 
-        <IconButton className={classes.showSm} onClick={handleSidebarOpen}>
-          <MenuIcon />
-        </IconButton>
+          <IconButton className={classes.showSm} onClick={handleSidebarOpen}>
+            <MenuIcon />
+          </IconButton>
 
-        <Typography variant="h5" className={classes.toolbarTitle}>
-          <Link component={RouterLink} color="inherit" to="/" className={classes.toolbarTitleLink}>
-            STORIES! Blog
-          </Link>
-        </Typography>
+          <Typography variant="h5" className={classes.toolbarTitle}>
+            <Link component={RouterLink} color="inherit" to="/" className={classes.toolbarTitleLink}>
+              STORIES! Blog
+            </Link>
+          </Typography>
 
-        {isAuthenticated ? <AccountButton /> : <LoginButton />}
+          {isAuthenticated ? <AccountButton /> : <LoginButton />}
+        </Container>
       </Toolbar>
 
       <Toolbar component="nav" variant="dense" className={classes.toolbarNav}>
-        {navLinks.map((link) => (
-          <Link component={RouterLink} key={link.id} to={link.url} color="inherit">
-            {link.name}
-          </Link>
-        ))}
+        <Container maxWidth="md" className={classes.navContainer}>
+          {navLinks.map((link) => (
+            <Link component={RouterLink} key={link.id} to={link.url} color="inherit">
+              {link.name}
+            </Link>
+          ))}
+        </Container>
       </Toolbar>
     </Fragment>
   )

@@ -9,12 +9,25 @@ const useStyles = makeStyles((theme) => ({
   cardMedia: {
     height: 200
   },
+  chipDiv: {
+    display: 'flex',
+    flexWrap: true
+  },
   chipCategory: {
     paddingLeft: 5,
-    paddingRight: 5
+    paddingRight: 5,
+    marginRight: theme.spacing(2),
+    marginBottom: theme.spacing(1)
+  },
+  chipPremium: {
+    marginBottom: theme.spacing(1),
+    paddingLeft: 5,
+    paddingRight: 5,
+    backgroundColor: '#f06292',
+    color: '#fff'
   },
   postTitle: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(1)
   },
   postSubtitle: {
     color: theme.palette.grey[700]
@@ -68,7 +81,10 @@ const BlogCard = (props) => {
       <CardActionArea component={RouterLink} to={getPostURL()}>
         <CardMedia className={classes.cardMedia} image={getCoverImage()} title="Random Image" />
         <CardContent>
-          <Chip label={post.category} color="primary" size="small" className={classes.chipCategory} />
+          <div className="chapDiv">
+            <Chip label={post.category} color="primary" size="small" className={classes.chipCategory} />
+            {post.premium && <Chip label="Premium" size="small" className={classes.chipPremium} />}
+          </div>
           <Typography className={classes.postTitle} gutterBottom>
             {post.title}
           </Typography>

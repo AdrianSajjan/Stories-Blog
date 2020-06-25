@@ -106,7 +106,7 @@ const CreatePost = () => {
   const formik = useFormik({
     initialValues: {
       title: '',
-      coverImage: '',
+      coverImage: 'https://source.unsplash.com/random',
       category: '',
       description: '',
       content: '<p>Your content goes here</p>',
@@ -119,7 +119,7 @@ const CreatePost = () => {
         .min(10, 'Title is too small')
         .matches(/[a-zA-Z0-9!_-]$/, 'Title contains invalid characters'),
       description: Yup.string().required('Field is required').min(50, 'Description is too small'),
-      coverImage: Yup.string().required('Field is required').url('Provide a valid URL'),
+      coverImage: Yup.string().optional().url('Provide a valid URL'),
       content: Yup.string().required('Field is required').min(200, 'Cannot be less than 200 letters'),
       category: Yup.string()
         .required('Field is required')
@@ -176,6 +176,7 @@ const CreatePost = () => {
           placeholder="Enter Post Description"
           variant="outlined"
           margin="dense"
+          className={classes.inputField}
           error={!!touched.description && !!errors.description}
           helperText={(touched.description && errors.description) || 'Description should me minimum 50 letters'}
           {...getFieldProps('description')}
@@ -284,10 +285,10 @@ const CreatePost = () => {
         />
         <div className={classes.buttonField}>
           <Button type="reset" variant="contained" color="secondary" className={classes.cancelBtn} disableElevation>
-            Cancel
+            <Typography variant="button">Cancel</Typography>
           </Button>
           <Button type="submit" variant="contained" color="primary" className={classes.submitBtn} disableElevation>
-            Create Post
+            <Typography variant="button">Create Post</Typography>
           </Button>
         </div>
       </form>

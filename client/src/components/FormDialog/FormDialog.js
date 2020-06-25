@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux'
-import { Dialog } from '@material-ui/core'
+import { useSelector, useDispatch } from 'react-redux'
+import { Dialog, Container } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Login, Register } from './'
+import { toggleFormDialog } from '../../actions'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -11,32 +11,29 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const FormDialog = (props) => {
+const FormDialog = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const isUserLoading = useSelector((state) => state.user.loading)
+  const isOpen = useSelector((state) => state.misc.formDialogOpen)
   const [currentForm, setCurrentForm] = useState(0)
 
-  const { isOpen, setIsOpen } = props
-
   const handleClose = () => {
-    setIsOpen(false)
+    dispatch(toggleFormDialog(false))
   }
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} classes={{ paper: classes.paper }}>
-      {currentForm === 0 && (
-        <Login handleClose={handleClose} changeForm={setCurrentForm} isUserLoading={isUserLoading} />
-      )}
-      {currentForm === 1 && (
-        <Register handleClose={handleClose} changeForm={setCurrentForm} isUserLoading={isUserLoading} />
-      )}
-    </Dialog>
+    <Container maxWidth="md">
+      <Dialog open={isOpen} onClose={handleClose} classes={{ paper: classes.paper }}>
+        {currentForm === 0 && (
+          <Login handleClose={handleClose} changeForm={setCurrentForm} isUserLoading={isUserLoading} />
+        )}
+        {currentForm === 1 && (
+          <Register handleClose={handleClose} changeForm={setCurrentForm} isUserLoading={isUserLoading} />
+        )}
+      </Dialog>
+    </Container>
   )
-}
-
-FormDialog.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  setIsOpen: PropTypes.func.isRequired
 }
 
 export default FormDialog

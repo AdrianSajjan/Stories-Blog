@@ -1,28 +1,27 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment } from 'react'
+import { Container } from '@material-ui/core'
+import { makeStyles } from '@material-ui/styles'
 import { Header } from '../../components'
 import { FormDialog, Sidebar } from '../../components'
 
+const useStyles = makeStyles({
+  container: {
+    minHeight: 'calc(100vh - 200px)'
+  }
+})
+
 const MainLayout = (props) => {
+  const classes = useStyles()
   const { children } = props
-  const [isFormDialogOpen, setIsFormDialogOpen] = useState(false)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [isSubscribeDialogOpen, setIsSubscribeDialogOpen] = useState(false)
 
   return (
     <Fragment>
-      <FormDialog isOpen={isFormDialogOpen} setIsOpen={setIsFormDialogOpen} />
-      <Sidebar
-        isOpen={isSidebarOpen}
-        setIsOpen={setIsSidebarOpen}
-        setFormDialogOpen={setIsFormDialogOpen}
-        setSubscribeDialogOpen={setIsSubscribeDialogOpen}
-      />
-      <Header
-        setFormDialogOpen={setIsFormDialogOpen}
-        setSidebarOpen={setIsSidebarOpen}
-        setSubscribeDialogOpen={setIsSubscribeDialogOpen}
-      />
-      {children}
+      <FormDialog />
+      <Sidebar />
+      <Header />
+      <Container maxWidth="md" className={classes.container}>
+        {children}
+      </Container>
     </Fragment>
   )
 }
