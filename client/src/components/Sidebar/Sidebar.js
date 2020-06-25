@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { SwipeableDrawer, List, ListItem, ListItemText, Collapse } from '@material-ui/core'
+import { SwipeableDrawer, List, ListItem, ListItemText, Collapse, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { ExpandLess, ExpandMore, Create, AccountBox, ExitToApp } from '@material-ui/icons'
 import { navLinks } from '../../constants'
-import { toggleSidebar, toggleFormDialog, toggleSubscribeDialog } from '../../actions'
+import { toggleSidebar, toggleFormDialog } from '../../actions'
 
 const useStyles = makeStyles((theme) => ({
   drawerContainer: {
@@ -43,10 +43,6 @@ const Sidebar = (props) => {
     dispatch(toggleSidebar(true))
   }
 
-  const handleSubscribeDialog = () => {
-    dispatch(toggleSubscribeDialog(true))
-  }
-
   const LoginButton = () => {
     return (
       <ListItem button>
@@ -62,6 +58,8 @@ const Sidebar = (props) => {
       setAccountOpen((prev) => !prev)
     }
 
+    const getUrl = () => (isAuthor ? '/author' : '/become-an-author')
+
     return (
       <Fragment>
         <ListItem button onClick={toggleAccount}>
@@ -71,34 +69,23 @@ const Sidebar = (props) => {
 
         <Collapse in={accountOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItem
-              button
-              component={RouterLink}
-              to={isAuthor ? '/author' : '/become-an-author'}
-              className={classes.nestedList}
-            >
+            <ListItem button component={RouterLink} to={getUrl()} className={classes.nestedList} onClick={handleClose}>
               <Create fontSize="small" />
-              <ListItemText
-                className={classes.accountOptions}
-                primary={isAuthor ? 'Author' : 'Become an Author'}
-                primaryTypographyProps={{ variant: 'body1' }}
-              />
+              <ListItemText className={classes.accountOptions} disableTypography>
+                <Typography variant="body1">{isAuthor ? 'Author' : 'Become an Author'}</Typography>
+              </ListItemText>
             </ListItem>
-            <ListItem button component={RouterLink} to="/profile" className={classes.nestedList}>
+            <ListItem button component={RouterLink} to="/profile" className={classes.nestedList} onClick={handleClose}>
               <AccountBox fontSize="small" />
-              <ListItemText
-                className={classes.accountOptions}
-                primary="Profile"
-                primaryTypographyProps={{ variant: 'body1' }}
-              />
+              <ListItemText className={classes.accountOptions} disableTypography>
+                <Typography variant="body1">Profile</Typography>
+              </ListItemText>
             </ListItem>
-            <ListItem button component={RouterLink} to="/logout" className={classes.nestedList}>
+            <ListItem button component={RouterLink} to="/logout" className={classes.nestedList} onClick={handleClose}>
               <ExitToApp fontSize="small" />
-              <ListItemText
-                className={classes.accountOptions}
-                primary="Logout"
-                primaryTypographyProps={{ variant: 'body1' }}
-              />
+              <ListItemText className={classes.accountOptions} disableTypography>
+                <Typography variant="body1">Logout</Typography>
+              </ListItemText>
             </ListItem>
           </List>
         </Collapse>
@@ -140,21 +127,23 @@ const Sidebar = (props) => {
     )
   }
 
+  const StoriesLogo = () => (
+    <ListItem>
+      <ListItemText disableTypography>
+        <Typography variant="h5" className={classes.drawerTitle}>
+          Stories! Blog
+        </Typography>
+      </ListItemText>
+    </ListItem>
+  )
+
   return (
     <Fragment>
       <SwipeableDrawer open={isOpen} onClose={handleClose} anchor="left" onOpen={handleOpen}>
         <div className={classes.drawerContainer}>
           <List>
-            <ListItem>
-              <ListItemText
-                primary="Stories! Blog"
-                primaryTypographyProps={{ variant: 'h5', className: classes.drawerTitle }}
-              />
-            </ListItem>
+            <StoriesLogo />
             {!isAuthenticated ? <LoginButton /> : <AccountOption />}
-            <ListItem button onClick={handleSubscribeDialog}>
-              <ListItemText primary="Subscribe" primaryTypographyProps={{ variant: 'body1' }} />
-            </ListItem>
             <CategoryOptions />
           </List>
         </div>

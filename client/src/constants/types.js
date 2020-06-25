@@ -13,6 +13,7 @@ export const GET_AUTHOR_POSTS = 'GET_AUTHOR_POSTS'
 export const SET_AUTHOR_POSTS = 'SET_AUTHOR_POSTS'
 export const GET_SELF_POSTS = 'GET_SELF_POSTS'
 export const SET_SELF_POSTS = 'SET_SELF_POSTS'
+export const UPDATE_SELF_POST = 'UPDATE_SELF_POST'
 
 export const SET_SESSION = 'SET_SESSION'
 export const GET_USER = 'GET_USER'

@@ -8,7 +8,8 @@ import {
   GET_SELF_POSTS,
   SET_SELF_POSTS,
   GET_CURRENT_POST,
-  SET_CURRENT_POST
+  SET_CURRENT_POST,
+  UPDATE_SELF_POST
 } from '../constants'
 
 export const getRecentPosts = () => async (dispatch, getState) => {
@@ -67,20 +68,20 @@ export const getSelfPosts = () => async (dispatch) => {
 export const createPost = (values) => async (dispatch) => {
   try {
     const res = await axios.post('/api/post', values)
-    dispatch({ type: SET_SELF_POSTS, value: res.data.post })
-    dispatch(enqueueSnackbar({ message: 'Post has been create successfully', options: { variant: 'success' } }))
+    dispatch({ type: SET_SELF_POSTS, value: [res.data.post] })
+    dispatch(enqueueSnackbar({ message: 'Post has been created successfully', options: { variant: 'success' } }))
   } catch (err) {
     dispatch(enqueueSnackbar({ message: "Couldn't create post", options: { variant: 'error' } }))
   }
 }
 
-export const editPost = (values) => async (dispatch) => {
+export const editPost = (values, id) => async (dispatch) => {
   try {
-    const res = await axios.put('/api/post', values)
-    dispatch({ type: SET_SELF_POSTS, value: res.data.post })
-    dispatch(enqueueSnackbar({ message: 'Post has been create successfully', options: { variant: 'success' } }))
+    const res = await axios.put(`/api/post/${id}`, values)
+    dispatch({ type: UPDATE_SELF_POST, value: res.data.post })
+    dispatch(enqueueSnackbar({ message: 'Post has been updated successfully', options: { variant: 'success' } }))
   } catch (err) {
-    dispatch(enqueueSnackbar({ message: "Couldn't create post", options: { variant: 'error' } }))
+    dispatch(enqueueSnackbar({ message: "Couldn't update post", options: { variant: 'error' } }))
   }
 }
 

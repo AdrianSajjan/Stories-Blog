@@ -85,19 +85,21 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Post = () => {
-  const classes = useStyles()
-  const dispatch = useDispatch()
   const { slug } = useParams()
-  const [init, setInit] = useState(false)
-  let { post, loading } = useSelector((state) => {
-    let post = state.posts.all.posts
+  const classes = useStyles()
+
+  const dispatch = useDispatch()
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
+  const { post, loading } = useSelector((state) => {
+    const _post = state.posts.all.posts
       .filter((post) => post.slug === slug)
       .slice(-1)
       .shift()
 
-    if (post) return { post, loading: false }
-    else return state.posts.current
+    return Boolean(_post) ? { post: _post, loading: false } : state.posts.current
   })
+
+  const [init, setInit] = useState(false)
 
   useEffect(() => {
     if (!post && !init) {
@@ -106,16 +108,8 @@ const Post = () => {
     }
   }, [post, init, dispatch, slug])
 
-  const getHTMLContent = () => {
-    return post.html
-      .replace(/background-color:#ffffff/gi, 'background-color:transparent')
-      .replace(/font-size:14px/gi, 'font-size: 16px')
-      .replace(/open sans/gi, "'Poppins'")
-  }
-
-  const getProfileImage = () => {
-    return post.user.profileImage && post.user.profileImage !== '' ? post.user.profileImage : blankProfile
-  }
+  const getProfileImage = () =>
+    post.user.profileImage && post.user.profileImage !== '' ? post.user.profileImage : blankProfile
 
   const getPostDate = () => {
     const timeFromNow = moment(post.createdAt).fromNow()
@@ -142,9 +136,18 @@ const Post = () => {
               {getPostDate()}
             </Typography>
           </div>
-          {!post.premium ? (
+          {post.premium && !isAuthenticated ? (
+            <div className={classes.premiumDiv}>
+              <Typography variant="body1" className={classes.premiumText} align="center">
+                This post is marked as premium. Please create an account to see this post.
+              </Typography>
+              <Button variant="contained" color="primary">
+                <Typography variant="button">Sign In or Create an Account</Typography>
+              </Button>
+            </div>
+          ) : (
             <Fragment>
-              <div className={classes.html}>{ReactHtmlParser(getHTMLContent())}</div>
+              <div className={classes.html}>{ReactHtmlParser(post.html)}</div>
               <div className={classes.voteDiv}>
                 <div className={classes.thumbUpDiv}>
                   <IconButton>
@@ -160,15 +163,6 @@ const Post = () => {
                 </div>
               </div>
             </Fragment>
-          ) : (
-            <div className={classes.premiumDiv}>
-              <Typography variant="body1" className={classes.premiumText} align="center">
-                This post is marked as premium. Please create an account to see this post.
-              </Typography>
-              <Button variant="contained" color="primary">
-                <Typography variant="button">Sign In or Create an Account</Typography>
-              </Button>
-            </div>
           )}
         </Grid>
       </Grid>

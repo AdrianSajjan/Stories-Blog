@@ -175,7 +175,7 @@ router.put('/:id', [authorizePrivateRoute, validateRequest(validatePost())], asy
     await post.save()
     await post.populate('user', ['profileImage']).execPopulate()
 
-    res.json({ post: savedPost })
+    res.json({ post })
   } catch (error) {
     console.log(error.message)
     res.status(500).send('Something went wrong. Please try again.')

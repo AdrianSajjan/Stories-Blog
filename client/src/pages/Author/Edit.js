@@ -134,7 +134,7 @@ const EditPost = () => {
         .oneOf(categorySelector.map((category) => category.value))
     }),
     onSubmit: (values) => {
-      dispatch(editPost(values))
+      dispatch(editPost(values, post._id))
     }
   })
 

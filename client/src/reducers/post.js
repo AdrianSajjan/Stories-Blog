@@ -6,7 +6,8 @@ import {
   GET_AUTHOR_POSTS,
   SET_AUTHOR_POSTS,
   GET_SELF_POSTS,
-  SET_SELF_POSTS
+  SET_SELF_POSTS,
+  UPDATE_SELF_POST
 } from '../constants'
 
 const initialState = {
@@ -119,14 +120,6 @@ export default function (state = initialState, actions) {
     case SET_CURRENT_POST:
       return {
         ...state,
-        all: {
-          posts: [
-            ...state.all.posts,
-            ...[value].filter((a) =>
-              !a ? false : state.all.posts.length ? state.all.posts.some((b) => b._id === a._id) : true
-            )
-          ]
-        },
         current: {
           post: value,
           loading: false
@@ -147,6 +140,14 @@ export default function (state = initialState, actions) {
         self: {
           posts: [...state.self.posts, ...value],
           loading: false
+        }
+      }
+    case UPDATE_SELF_POST:
+      return {
+        ...state,
+        self: {
+          ...state.self,
+          posts: state.self.posts.map((post) => (post._id === value._id ? value : post))
         }
       }
 
