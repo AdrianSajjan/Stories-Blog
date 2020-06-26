@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 const Register = (props) => {
   const [visible, setVisible] = useState(false)
 
-  const loading = useSelector((state) => state.request.registration)
+  const loading = useSelector((state) => state.request.register)
   const dispatch = useDispatch()
   const classes = useStyles()
   const formik = useFormik({
