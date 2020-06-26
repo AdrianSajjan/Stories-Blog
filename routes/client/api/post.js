@@ -131,6 +131,7 @@ router.post('/', [authorizePrivateRoute, validateRequest(validatePost())], async
     post.html = sanitizeHtml(content)
     post.category = category
     post.coverImage = coverImage
+
     if (premium) post.premium = premium
     if (tags) post.tags = tags
 

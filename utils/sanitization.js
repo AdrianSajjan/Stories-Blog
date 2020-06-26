@@ -4,7 +4,7 @@ const defaultTagList = sanitize.defaults.allowedTags
 
 const sanitizeHtml = (html) => {
   return sanitize(html, {
-    allowedTags: defaultTagList.concat(['img'], ['h1'], ['h2']),
+    allowedTags: defaultTagList.concat(['img'], ['h1'], ['h2'], ['span'], ['pre']),
     allowedAttributes: false
   })
 }
