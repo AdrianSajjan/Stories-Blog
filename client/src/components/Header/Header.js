@@ -115,7 +115,7 @@ const Header = () => {
           <Typography variant="button">Account</Typography>
         </Button>
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose} keepMounted>
-          <MenuItem component={RouterLink} to={isAuthor ? '/author' : '/became-an-author'}>
+          <MenuItem component={RouterLink} to={isAuthor ? '/author' : '/become-an-author'}>
             <Create fontSize="small" className={classes.accountIcons} />
             <span>{isAuthor ? 'Author' : 'Become an Author'}</span>
           </MenuItem>

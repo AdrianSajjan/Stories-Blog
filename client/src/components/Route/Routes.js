@@ -1,7 +1,7 @@
 import React from 'react'
 import { Switch } from 'react-router-dom'
 import { ProtectedRoute } from '.'
-import { Main, Author, CreatePost, EditPost, Post } from '../../pages'
+import { Main, Author, BecomeAnAuthor, CreatePost, EditPost, Post, Error404 } from '../../pages'
 import { MainLayout } from '../../layouts'
 
 const Routes = () => {
@@ -10,9 +10,11 @@ const Routes = () => {
       <ProtectedRoute path="/" layout={MainLayout} component={Main} exact />
       <ProtectedRoute path="/category/:category" layout={MainLayout} component={Main} exact />
       <ProtectedRoute path="/author" layout={MainLayout} component={Author} isPrivate exact />
+      <ProtectedRoute path="/become-an-author" layout={MainLayout} component={BecomeAnAuthor} isPrivate exact />
       <ProtectedRoute path="/author/create" layout={MainLayout} component={CreatePost} isPrivate exact />
       <ProtectedRoute path="/author/edit/:slug" layout={MainLayout} component={EditPost} isPrivate exact />
       <ProtectedRoute path="/:author/:slug" layout={MainLayout} component={Post} exact />
+      <ProtectedRoute layout={MainLayout} component={Error404} />
     </Switch>
   )
 }
