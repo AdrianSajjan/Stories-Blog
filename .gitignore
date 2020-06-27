@@ -3,4 +3,6 @@ admin/node_modules
 admin/build
 client/node_modules
 client/build
+admin/.env
+client/.env
 .env
