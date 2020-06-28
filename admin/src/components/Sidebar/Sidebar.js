@@ -5,34 +5,27 @@ import { makeStyles } from '@material-ui/styles'
 import {
   Home as HomeIcon,
   People as PeopleIcon,
-  DnsRounded as DnsRoundedIcon,
-  PhotoSizeSelectActual as PermMediaOutlinedIcon,
-  Public as PublicIcon,
-  SettingsEthernet as SettingsEthernetIcon,
-  SettingsInputComponent as SettingsInputComponentIcon,
-  Timer as TimerIcon,
-  Settings as SettingsIcon,
-  PhonelinkSetup as PhonelinkSetupIcon
+  Email as EmailIcon,
+  Search as SearchIcon,
+  Assignment as AssignmentIcon,
+  Category as CategoryIcon
 } from '@material-ui/icons/'
 
 const categories = ({ iconStyles }) => [
   {
-    id: 'Develop',
+    id: 'Users',
     children: [
-      { id: 'Authentication', icon: <PeopleIcon className={iconStyles} />, active: true },
-      { id: 'Database', icon: <DnsRoundedIcon className={iconStyles} /> },
-      { id: 'Storage', icon: <PermMediaOutlinedIcon className={iconStyles} /> },
-      { id: 'Hosting', icon: <PublicIcon className={iconStyles} /> },
-      { id: 'Functions', icon: <SettingsEthernetIcon className={iconStyles} /> },
-      { id: 'ML Kit', icon: <SettingsInputComponentIcon className={iconStyles} /> }
+      { id: 'Search', icon: <SearchIcon className={iconStyles} />, active: true },
+      { id: 'Authors', icon: <PeopleIcon className={iconStyles} /> },
+      { id: 'Mailbox', icon: <EmailIcon className={iconStyles} /> }
     ]
   },
   {
-    id: 'Quality',
+    id: 'Posts',
     children: [
-      { id: 'Analytics', icon: <SettingsIcon className={iconStyles} /> },
-      { id: 'Performance', icon: <TimerIcon className={iconStyles} /> },
-      { id: 'Test Lab', icon: <PhonelinkSetupIcon className={iconStyles} /> }
+      { id: 'Search', icon: <SearchIcon className={iconStyles} />, active: true },
+      { id: 'Categories', icon: <CategoryIcon className={iconStyles} /> },
+      { id: 'Recents', icon: <AssignmentIcon className={iconStyles} /> }
     ]
   }
 ]
@@ -77,7 +70,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2)
   },
   icons: {
-    color: theme.palette.common.white
+    color: theme.palette.common.white,
+    width: 20,
+    height: 20
   }
 }))
 
@@ -87,12 +82,12 @@ const Sidebar = ({ ...props }) => {
   return (
     <Drawer variant="permanent" {...props}>
       <List disablePadding>
-        <ListItem className={clsx(styles.firebase, styles.item, styles.itemCategory)}>Paperbase</ListItem>
+        <ListItem className={clsx(styles.firebase, styles.item, styles.itemCategory)}>Stories! Blog</ListItem>
         <ListItem className={clsx(styles.item, styles.itemCategory)}>
           <ListItemIcon className={styles.itemIcon}>
             <HomeIcon className={styles.icons} />
           </ListItemIcon>
-          <ListItemText classes={{ primary: styles.itemPrimary }}>Project Overview</ListItemText>
+          <ListItemText classes={{ primary: styles.itemPrimary }}>Dashboard</ListItemText>
         </ListItem>
         {categories({ iconStyles: styles.icons }).map(({ id, children }) => (
           <Fragment key={id}>

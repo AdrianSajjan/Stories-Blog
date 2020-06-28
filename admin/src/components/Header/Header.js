@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Header = ({ onDrawerToggle }) => {
+const Header = ({ onSidebarToggle }) => {
   const styles = useStyles()
 
   return (
@@ -51,7 +51,7 @@ const Header = ({ onDrawerToggle }) => {
           <Grid container spacing={1} alignItems="center">
             <Hidden smUp>
               <Grid item>
-                <IconButton color="inherit" onClick={onDrawerToggle} className={styles.menuButton}>
+                <IconButton color="inherit" onClick={onSidebarToggle} className={styles.menuButton}>
                   <MenuIcon />
                 </IconButton>
               </Grid>
@@ -113,7 +113,7 @@ const Header = ({ onDrawerToggle }) => {
 }
 
 Header.propTypes = {
-  onDrawerToggle: PropTypes.func.isRequired
+  onSidebarToggle: PropTypes.func.isRequired
 }
 
 export default Header

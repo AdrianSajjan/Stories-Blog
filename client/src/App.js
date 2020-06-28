@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Routes, Notifier } from './components'
+import { Notifier } from './components'
+import { Routes } from './routes'
 import { getCategoryPosts, getSelfPosts } from './actions'
 import { categoryLoader } from './constants'
 

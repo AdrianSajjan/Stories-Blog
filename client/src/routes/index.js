@@ -4,7 +4,7 @@ import { ProtectedRoute } from '.'
 import { Main, Author, BecomeAnAuthor, CreatePost, EditPost, Post, Error404 } from '../../pages'
 import { MainLayout } from '../../layouts'
 
-const Routes = () => {
+export const Routes = () => {
   return (
     <Switch>
       <ProtectedRoute path="/" layout={MainLayout} component={Main} exact />
@@ -18,5 +18,3 @@ const Routes = () => {
     </Switch>
   )
 }
-
-export default Routes
