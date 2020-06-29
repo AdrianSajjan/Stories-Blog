@@ -1,12 +1,9 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { Hidden } from '@material-ui/core/'
-import { makeStyles, useTheme } from '@material-ui/styles'
+import { makeStyles } from '@material-ui/styles'
 
 import { Sidebar } from '../../components/Sidebar'
 import { Header } from '../../components/Header'
 import { Copyright } from '../../components/Copyright'
-import { toggleSidebar } from '../../actions'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,25 +34,14 @@ const useStyles = makeStyles((theme) => ({
 
 const MainLayout = ({ children }) => {
   const styles = useStyles()
-  const theme = useTheme()
-  const dispatch = useDispatch()
-
-  const isOpen = useSelector((state) => state.misc.isOpen)
-  const handleClose = () => dispatch(toggleSidebar(false))
-  const handleToggle = () => dispatch(toggleSidebar(false, true))
 
   return (
     <div className={styles.root}>
       <nav className={styles.drawer}>
-        <Hidden smUp implementation="js">
-          <Sidebar PaperProps={{ style: { width: theme.spacing(32) } }} variant="temporary" />
-        </Hidden>
-        <Hidden xsDown implementation="css">
-          <Sidebar PaperProps={{ style: { width: theme.spacing(32) } }} open={isOpen} onClose={handleClose} />
-        </Hidden>
+        <Sidebar />
       </nav>
       <div className={styles.app}>
-        <Header onSidebarToggle={handleToggle} />
+        <Header />
         <main className={styles.main}>{children}</main>
         <footer className={styles.footer}>
           <Copyright />
