@@ -7,7 +7,12 @@ import { Copyright } from '../../components/Copyright'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
+    [theme.breakpoints.up('xs')]: {
+      display: 'block'
+    },
+    [theme.breakpoints.up('sm')]: {
+      display: 'flex'
+    },
     minHeight: '100vh'
   },
   drawer: {
@@ -17,14 +22,24 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   app: {
-    flex: 1,
+    [theme.breakpoints.down('xs')]: {
+      minHeight: '100vh'
+    },
+    [theme.breakpoints.up('sm')]: {
+      flex: 1
+    },
     display: 'flex',
     flexDirection: 'column'
   },
   main: {
     flex: 1,
-    padding: theme.spacing(6, 4),
-    background: '#eaeff1'
+    background: '#eaeff1',
+    [theme.breakpoints.up('xs')]: {
+      padding: theme.spacing(6, 2)
+    },
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(4, 6)
+    }
   },
   footer: {
     padding: theme.spacing(2),

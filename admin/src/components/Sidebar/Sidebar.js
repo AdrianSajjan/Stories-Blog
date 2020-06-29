@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const MobileSidebar = ({ open, onOpen, onClose, paperProps, children }) => {
+const MobileSidebar = ({ styles, open, onOpen, onClose, paperProps, children }) => {
   return (
     <SwipeableDrawer variant="temporary" open={open} onOpen={onOpen} onClose={onClose} PaperProps={paperProps}>
       {children}
@@ -75,7 +75,7 @@ const MobileSidebar = ({ open, onOpen, onClose, paperProps, children }) => {
   )
 }
 
-const DesktopSidebar = ({ children, paperProps }) => {
+const DesktopSidebar = ({ styles, children, paperProps }) => {
   return (
     <Drawer variant="permanent" PaperProps={paperProps}>
       {children}
@@ -113,8 +113,6 @@ const CategoryList = ({ styles }) => {
 
 const CategorySublist = ({ name, icon, route, styles }) => {
   const match = useRouteMatch({ path: route, strict: false, sensitive: false })
-
-  console.table([{ match, route }])
 
   return (
     <Fragment>
