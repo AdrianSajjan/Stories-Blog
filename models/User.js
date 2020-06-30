@@ -33,7 +33,7 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false
   },
-  isAdmin: {
+  authorRequest: {
     type: Boolean,
     default: false
   }

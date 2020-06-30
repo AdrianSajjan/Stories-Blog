@@ -96,8 +96,18 @@ const validatePost = () => [
     .withMessage('Content cannot be less than 400 letters')
 ]
 
+const validateAuthorRequest = () => [
+  body('mailBody').custom((value, { req }) => {
+    if (!req.body.hasMail) return true
+
+    const mail = req.body.mailbody
+    if (!mail || mail.trim() === '') throw new Error('Mail should have a body.')
+  })
+]
+
 module.exports = {
   validateUserRegistration,
   validateUserLogin,
-  validatePost
+  validatePost,
+  validateAuthorRequest
 }

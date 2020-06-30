@@ -4,7 +4,12 @@ const jwt = require('jsonwebtoken')
 
 const { User } = require('../../../models')
 const { validateRequest, authorizePrivateRoute } = require('../../../middleware')
-const { validateUserRegistration, generateOAuth2Tokens, validateUserLogin } = require('../../../utils')
+const {
+  validateUserRegistration,
+  generateOAuth2Tokens,
+  validateUserLogin,
+  validateAuthorRequest
+} = require('../../../utils')
 
 const router = express.Router()
 
@@ -121,9 +126,40 @@ router.get('/', authorizePrivateRoute, async (req, res) => {
 })
 
 /**
- * @route : /api/user/tokens
+ * @route : /api/user/author-request
  * @type : POST
  * @access : Private
+ * @desc : Author Approval
+ */
+router.post('/author-request', [authorizePrivateRoute, validateRequest(validateAuthorRequest())], async (req, res) => {
+  const userID = req.user.id
+  const hasMail = req.body.hasMail
+  const mailBody = req.body.mailBody
+  const mailSubject = req.body.subject
+
+  try {
+    const user = await User.findById(userID)
+
+    if (!user)
+      return res.status(404).json({
+        msg: "Account doesn't exist"
+      })
+
+    user.authorRequest = true
+
+    await user.save()
+
+    res.json({ msg: 'Request has been made. Please wait for approval' })
+  } catch (error) {
+    console.error(error.message)
+    res.status(500).send('Something went wrong. Please Try Again.')
+  }
+})
+
+/**
+ * @route : /api/user/oauth2
+ * @type : POST
+ * @access : Public
  * @desc : Get OAUTH tokens
  */
 router.post('/oauth2', async (req, res) => {
