@@ -8,7 +8,7 @@ export const sidebarCategories = [
       { name: 'Authors', icon: <People fontSize="small" />, route: '/dashboard/authors' },
       { name: 'Pending Requests', icon: <NewReleases fontSize="small" />, route: '/dashboard/pending-requests' },
       { name: 'Mailbox', icon: <Mail fontSize="small" />, route: '/dashboard/mailbox' },
-      { name: 'Search Users', icon: <Search fontSize="small" />, route: '/dashboard/search' }
+      { name: 'Search Users', icon: <Search fontSize="small" />, route: '/dashboard/users/search' }
     ]
   }
 ]

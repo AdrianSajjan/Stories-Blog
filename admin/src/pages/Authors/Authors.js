@@ -14,6 +14,12 @@ const useStyles = makeStyles((theme) => ({
   },
   tablePagination: {
     marginLeft: 'auto'
+  },
+  tableCellHead: {
+    fontWeight: 600
+  },
+  tableCellBody: {
+    fontWeight: 500
   }
 }))
 
@@ -32,32 +38,34 @@ const Authors = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Username</TableCell>
-                    <TableCell>Actions</TableCell>
+                    <TableCell className={styles.tableCellHead}>ID</TableCell>
+                    <TableCell className={styles.tableCellHead}>Name</TableCell>
+                    <TableCell className={styles.tableCellHead}>Email</TableCell>
+                    <TableCell className={styles.tableCellHead}>Username</TableCell>
+                    <TableCell className={styles.tableCellHead}>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow>
-                    <TableCell>1</TableCell>
-                    <TableCell>Adrian Sajjan</TableCell>
-                    <TableCell>adriansajjan2001@gmail.com</TableCell>
-                    <TableCell>adriansajjan</TableCell>
-                    <TableCell>
-                      <IconButton color="secondary">
-                        <DeleteForever />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
+                  {[1, 2, 3, 4, 5].map((index) => (
+                    <TableRow key={index}>
+                      <TableCell className={styles.tableCellBody}>{index}</TableCell>
+                      <TableCell className={styles.tableCellBody}>Adrian Sajjan</TableCell>
+                      <TableCell className={styles.tableCellBody}>adriansajjan2001@gmail.com</TableCell>
+                      <TableCell className={styles.tableCellBody}>adriansajjan</TableCell>
+                      <TableCell>
+                        <IconButton color="secondary">
+                          <DeleteForever />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </TableContainer>
             <TablePagination
               component="div"
               rowsPerPageOptions={[]}
-              count={1}
+              count={20}
               rowsPerPage={5}
               page={0}
               onChangePage={() => {}}
