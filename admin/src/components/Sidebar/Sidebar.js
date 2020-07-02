@@ -20,7 +20,8 @@ const useStyles = makeStyles((theme) => ({
   },
   storiesLogoText: {
     color: theme.palette.common.white,
-    fontFamily: ['Metal Mania', 'cursive'].join(',')
+    fontFamily: ['Metal Mania', 'cursive'].join(','),
+    letterSpacing: 1
   },
   categoryHeader: {
     paddingTop: theme.spacing(2),

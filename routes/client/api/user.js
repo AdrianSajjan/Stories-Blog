@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const { User } = require('../../../models')
+const { User, Mail } = require('../../../models')
 const { validateRequest, authorizePrivateRoute } = require('../../../middleware')
 const {
   validateUserRegistration,
@@ -113,10 +113,7 @@ router.get('/', authorizePrivateRoute, async (req, res) => {
 
     const user = await User.findById(userID).select('-password')
 
-    if (!user)
-      return res.status(404).json({
-        msg: "Account doesn't exist"
-      })
+    if (!user) return res.status(404).json({ msg: "Account doesn't exist" })
 
     res.json({ user })
   } catch (error) {
@@ -140,12 +137,14 @@ router.post('/author-request', [authorizePrivateRoute, validateRequest(validateA
   try {
     const user = await User.findById(userID)
 
-    if (!user)
-      return res.status(404).json({
-        msg: "Account doesn't exist"
-      })
+    if (!user) return res.status(404).json({ msg: "Account doesn't exist" })
 
     user.authorRequest = true
+
+    if (hasMail) {
+      const mail = new Mail({ user: userID, subject: mailSubject, body: mailBody })
+      await mail.save()
+    }
 
     await user.save()
 

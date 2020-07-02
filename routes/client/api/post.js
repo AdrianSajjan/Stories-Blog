@@ -29,6 +29,23 @@ router.get('/:slug', authorizeProtectedRoute, async (req, res) => {
 })
 
 /**
+ * @route : /api/post/featured
+ * @type : GET
+ * @access : Public
+ * @desc : Return Featured Post
+ */
+router.get('/featured', async (_req, res) => {
+  try {
+    const post = await Post.find().sort({ upvotes: -1 }).limit(1)
+
+    return res.json({ post: post.slice(-1).pop() })
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).send('Something went wrong. Please try again.')
+  }
+})
+
+/**
  * @route : /api/post/category/:category
  * @type : GET
  * @access : Protected

@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles((theme) => ({
   pageTitle: {
-    fontFamily: ['Metal Mania', 'cursive'].join(','),
+    fontWeight: 600,
     marginBottom: theme.spacing(2)
   },
   tablePagination: {
