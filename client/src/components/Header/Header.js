@@ -14,7 +14,8 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbarTitle: {
     flex: 1,
-    fontFamily: ['Metal Mania', 'monospace'].join(','),
+    fontFamily: ['Metal Mania', 'cursive'].join(','),
+    fontWeight: 'normal',
     letterSpacing: 1,
     [theme.breakpoints.down('sm')]: {
       textAlign: 'left',
@@ -148,7 +149,7 @@ const Header = () => {
 
   return (
     <Fragment>
-      <AppBar position="sticky" className={classes.appBar}>
+      <AppBar position="sticky" elevation={2} className={classes.appBar}>
         <Container maxWidth="md" className={classes.mainContainer}>
           <Toolbar component="header" className={classes.mainToolbar}>
             <CategoriesButton />

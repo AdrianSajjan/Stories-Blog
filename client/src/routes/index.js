@@ -1,8 +1,8 @@
 import React from 'react'
 import { Switch } from 'react-router-dom'
-import { ProtectedRoute } from '.'
-import { Main, Author, BecomeAnAuthor, CreatePost, EditPost, Post, Error404 } from '../../pages'
-import { MainLayout } from '../../layouts'
+import { ProtectedRoute } from '../components'
+import { Main, Author, BecomeAnAuthor, CreatePost, EditPost, Post, Error404 } from '../pages'
+import { MainLayout } from '../layouts'
 
 export const Routes = () => {
   return (

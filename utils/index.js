@@ -6,6 +6,7 @@ module.exports = {
   validateUserRegistration,
   validateUserLogin,
   validatePost,
+  validateAuthorRequest,
   generateOAuth2Tokens,
   generateOAuthToken,
   sanitizeHtml

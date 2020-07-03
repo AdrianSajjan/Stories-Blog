@@ -6,7 +6,7 @@ import { FormDialog, Sidebar } from '../../components'
 
 const useStyles = makeStyles({
   container: {
-    minHeight: 'calc(100vh - 100px)'
+    minHeight: 'calc(100vh - 150px)'
   }
 })
 

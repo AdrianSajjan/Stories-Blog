@@ -20,12 +20,12 @@ const useStyles = makeStyles({
     marginBottom: 16
   },
   typographyPrimary: {
-    fontFamily: '"Roboto Mono", monospace',
+    fontFamily: '"Poppins", sans-serif',
     marginBottom: 16,
     fontWeight: 'normal'
   },
   typographySecondary: {
-    fontFamily: '"Roboto Mono", monospace',
+    fontFamily: '"Poppins", sans-serif',
     marginBottom: 24,
     fontWeight: 'normal'
   },
@@ -33,7 +33,7 @@ const useStyles = makeStyles({
     width: 200
   },
   buttonTypography: {
-    fontFamily: '"Roboto Mono", monospace'
+    fontFamily: '"Poppins", sans-serif'
   }
 })
 
