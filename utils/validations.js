@@ -96,8 +96,15 @@ const validatePost = () => [
     .withMessage('Content cannot be less than 400 letters')
 ]
 
+const validateAdminLogin = () => [
+  body('email').trim().not().isEmpty().withMessage('Please enter your registered email'),
+
+  body('password').trim().not().isEmpty().withMessage('Password cannot be empty')
+]
+
 module.exports = {
   validateUserRegistration,
   validateUserLogin,
-  validatePost
+  validatePost,
+  validateAdminLogin
 }

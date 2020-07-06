@@ -16,7 +16,7 @@ const generateOAuth2Tokens = (payload) => {
 
 const generateOAuthToken = (payload) => {
   const accessToken = jwt.sign(payload, process.env.ACCESS_SECRET, {
-    expiresIn: '1d'
+    expiresIn: '6h'
   })
 
   return accessToken
