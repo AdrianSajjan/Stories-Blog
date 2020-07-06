@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 
 const { Admin } = require('../../../models')
 const { authorizePrivateRoute, validateRequest } = require('../../../middleware')
-const { validateAdminLogin, generateOAuthToken } = require('../../../utils')
+const { validateAdminLogin, generateOAuthToken, validateAdminRegistration } = require('../../../utils')
 
 const router = express.Router()
 
@@ -67,7 +67,7 @@ router.post('/', validateRequest(validateAdminLogin()), async (req, res) => {
  * @access : Restricted! Only available once for initial registration and then private access
  * @desc : Login an Admin
  */
-router.post('/register', async (req, res) => {
+router.post('/register', [authorizePrivateRoute, validateRequest(validateAdminRegistration())], async (req, res) => {
   try {
     const { name, profileImage, email, password } = req.body
 
@@ -84,7 +84,7 @@ router.post('/register', async (req, res) => {
     await admin.save()
 
     res.json({ msg: 'OK. Admin registered' })
-  } catch (err) {
+  } catch (error) {
     console.error(error.message)
     res.status(500).send('Internal Server Error. Please try again!')
   }

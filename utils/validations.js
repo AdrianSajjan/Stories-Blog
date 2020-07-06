@@ -1,4 +1,4 @@
-const { User } = require('../models')
+const { User, Admin } = require('../models')
 const { body, oneOf } = require('express-validator')
 
 const validateUserRegistration = () => [
@@ -102,9 +102,41 @@ const validateAdminLogin = () => [
   body('password').trim().not().isEmpty().withMessage('Password cannot be empty')
 ]
 
+const validateAdminRegistration = () => [
+  body('name').trim().not().isEmpty().withMessage('Name cannot be empty'),
+
+  body('email')
+    .trim()
+    .not()
+    .isEmpty()
+    .withMessage('Email cannot be empty')
+    .isEmail()
+    .withMessage('Please enter a valid email')
+    .custom(async (value) => {
+      const admin = await Admin.findOne({ email: value })
+      if (admin) throw new Error('Email already in use')
+      else return true
+    }),
+
+  body('password')
+    .trim()
+    .not()
+    .isEmpty()
+    .withMessage('Password cannot be empty')
+    .isLength({ min: 6 })
+    .withMessage('Password cannot be less than 6 characters'),
+
+  body('confirmPassword').custom((value, { req }) => {
+    const { password } = req.body
+    if (password && password !== value) throw new Error("Passwords don't match")
+    else return true
+  })
+]
+
 module.exports = {
   validateUserRegistration,
   validateUserLogin,
   validatePost,
-  validateAdminLogin
+  validateAdminLogin,
+  validateAdminRegistration
 }
