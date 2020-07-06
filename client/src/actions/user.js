@@ -87,3 +87,15 @@ export const setUser = (data) => (dispatch) => {
 
   dispatch({ type: SET_USER, payload })
 }
+
+export const authorRequest = (data) => async (dispatch) => {
+  try {
+    await axios.post('/api/user/author-request', data)
+    dispatch(enqueueSnackbar({ message: 'Your request has been registered', options: { variant: 'success' } }))
+  } catch (error) {
+    console.log(error.response.data)
+    error.response.status === 409
+      ? dispatch(enqueueSnackbar({ message: 'Previous request awaiting approval', options: { variant: 'warning' } }))
+      : dispatch(enqueueSnackbar({ message: 'Author request failed', options: { variant: 'error' } }))
+  }
+}

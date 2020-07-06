@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { TextField, Button, Typography, FormControlLabel, Checkbox } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
+import { authorRequest } from '../../actions'
 
 const useStyles = makeStyles((theme) => ({
   pageStart: {
@@ -55,18 +56,26 @@ const BecomeAnAuthor = () => {
       hasMail: Yup.boolean(),
       mailBody: Yup.string().when('hasMail', {
         is: true,
-        then: Yup.string().min(50, "Can't be less than 20 letters."),
+        then: Yup.string().required('Field is required').min(30, "Can't be less than 20 letters."),
         otherwise: Yup.string().optional()
       }),
       mailSubject: Yup.string().when('hasMail', {
         is: true,
-        then: Yup.string().min(20, "Can't be less than 20 letters."),
+        then: Yup.string().required('Field is required').min(10, "Can't be less than 20 letters."),
         otherwise: Yup.string().optional()
       })
-    })
+    }),
+    onSubmit: (values, actions) => {
+      dispatch(authorRequest(values))
+      actions.resetForm()
+    }
   })
 
-  const { values, errors, setFieldValue } = formik
+  const { values, errors, touched, setFieldValue, getFieldProps, handleSubmit } = formik
+
+  const handleChangeMail = (event) => {
+    setFieldValue('hasMail', event.target.checked)
+  }
 
   return (
     <Fragment>
@@ -74,40 +83,35 @@ const BecomeAnAuthor = () => {
         <Typography align="center" variant="h5" className={classes.pageTitle} gutterBottom>
           Become An Author
         </Typography>
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={handleSubmit}>
           <div className={classes.inputFields}>
             <TextField
-              name="expertise"
-              id="expertise"
-              label="Area Of Expertise"
+              name="subject"
+              id="subject"
+              label="Subject"
               variant="outlined"
               margin="dense"
-              helperText="Enter your area of expertise"
               className={classes.inputField}
+              error={!!touched.mailSubject && !!errors.mailSubject}
+              helperText={(touched.mailSubject && errors.mailSubject) || 'Write your Subject'}
+              {...getFieldProps('mailSubject')}
             />
             <TextField
               multiline
               rows={6}
               rowsMax={12}
-              name="message"
-              id="message"
+              name="Body"
+              id="Body"
               variant="outlined"
               margin="dense"
               label="Message For Admin"
-              helperText="Leave a short note for the admin"
               className={classes.inputField}
+              error={!!touched.mailBody && !!errors.mailBody}
+              helperText={(touched.mailBody && errors.mailBody) || 'Write mail body'}
+              {...getFieldProps('mailBody')}
             />
             <FormControlLabel
-              control={
-                <Checkbox
-                  color="primary"
-                  name="hasMail"
-                  checked={values.hasMail}
-                  onChange={(event) => {
-                    setFieldValue(event.target.checked)
-                  }}
-                />
-              }
+              control={<Checkbox color="primary" name="hasMail" checked={values.hasMail} onChange={handleChangeMail} />}
               label="Send Mail"
             />
           </div>

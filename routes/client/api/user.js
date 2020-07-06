@@ -128,16 +128,18 @@ router.get('/', authorizePrivateRoute, async (req, res) => {
  * @access : Private
  * @desc : Author Approval
  */
-router.post('/author-request', [authorizePrivateRoute, validateRequest(validateAuthorRequest())], async (req, res) => {
+router.post('/author-request', authorizePrivateRoute, async (req, res) => {
   const userID = req.user.id
   const hasMail = req.body.hasMail
   const mailBody = req.body.mailBody
-  const mailSubject = req.body.subject
+  const mailSubject = req.body.mailSubject
 
   try {
     const user = await User.findById(userID)
 
     if (!user) return res.status(404).json({ msg: "Account doesn't exist" })
+
+    if (user.authorRequest) return res.status(409).json({ msg: 'Your request is awaiting approval' })
 
     user.authorRequest = true
 
