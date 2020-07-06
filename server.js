@@ -13,9 +13,11 @@ const PORT = process.env.PORT || 5000
 app.use(cors())
 app.use(express.json())
 
+// Client Routes
 app.use('/api/user', userRouter)
 app.use('/api/post', postRouter)
 
+// Admin Routes
 app.use('/admin/api/auth', adminAuthRouter)
 app.use('/admin/api/user', adminUserRouter)
 

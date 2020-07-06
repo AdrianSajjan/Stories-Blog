@@ -13,8 +13,7 @@ const UserSchema = new Schema({
     unique: true
   },
   profileImage: {
-    url: String,
-    publicID: String
+    type: String
   },
   email: {
     type: String,

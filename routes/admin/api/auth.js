@@ -61,4 +61,33 @@ router.post('/', validateRequest(validateAdminLogin()), async (req, res) => {
   }
 })
 
+/**
+ * @route : admin/api/auth/register
+ * @type : POST
+ * @access : Restricted! Only available once for initial registration and then private access
+ * @desc : Login an Admin
+ */
+router.post('/register', async (req, res) => {
+  try {
+    const { name, profileImage, email, password } = req.body
+
+    const salt = await bcrypt.genSalt(10)
+    const hash = await bcrypt.hash(password, salt)
+
+    const admin = new Admin({
+      name,
+      profileImage,
+      email,
+      password: hash
+    })
+
+    await admin.save()
+
+    res.json({ msg: 'OK. Admin registered' })
+  } catch (err) {
+    console.error(error.message)
+    res.status(500).send('Internal Server Error. Please try again!')
+  }
+})
+
 module.exports = router

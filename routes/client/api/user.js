@@ -4,12 +4,7 @@ const jwt = require('jsonwebtoken')
 
 const { User, Mail } = require('../../../models')
 const { validateRequest, authorizePrivateRoute } = require('../../../middleware')
-const {
-  validateUserRegistration,
-  generateOAuth2Tokens,
-  validateUserLogin,
-  validateAuthorRequest
-} = require('../../../utils')
+const { validateUserRegistration, generateOAuth2Tokens, validateUserLogin } = require('../../../utils')
 
 const router = express.Router()
 
@@ -72,7 +67,7 @@ router.post('/login', validateRequest(validateUserLogin()), async (req, res) => 
  */
 router.post('/register', validateRequest(validateUserRegistration()), async (req, res) => {
   try {
-    const { name, username, email, password } = req.body
+    const { name, username, email, password, profileImage } = req.body
 
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(password, salt)
@@ -81,6 +76,7 @@ router.post('/register', validateRequest(validateUserRegistration()), async (req
       name,
       username,
       email,
+      profileImage,
       password: hash
     })
 
