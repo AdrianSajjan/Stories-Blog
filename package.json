@@ -20,7 +20,7 @@
     "express-validator": "^6.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.16",
-    "sanitize-html": "^1.25.0",
+    "sanitize-html": "^2.3.2",
     "slugify": "^1.4.0"
   },
   "devDependencies": {
